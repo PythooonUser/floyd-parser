@@ -1,0 +1,31 @@
+{
+  "name": "@pythooonuser/floyd-parser",
+  "version": "1.0.0",
+  "description": "A parser for the programming language Floyd.",
+  "main": "src/floyd-parser.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PythooonUser/floyd-parser.git"
+  },
+  "author": "Felix Siebeneicker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PythooonUser/floyd-parser/issues"
+  },
+  "homepage": "https://github.com/PythooonUser/floyd-parser#readme",
+  "dependencies": {
+    "lex": "^1.7.9"
+  },
+  "devDependencies": {
+    "mocha": "^8.1.0",
+    "prettier": "^2.0.5"
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "trailingComma": "none",
+    "singleQuote": false
+  }
+}
