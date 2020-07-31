@@ -176,8 +176,8 @@ let Symbol = {
   std: null
 };
 
-let Parse = {
-  advance: function (id) {
+class Parse {
+  static advance(id) {
     if (id && Context.Token.id !== id) {
       Error.error(`Expected: ${id}`, Context.Token.range);
     }
@@ -242,8 +242,9 @@ let Parse = {
     }
 
     return Context.Token;
-  },
-  expression: function (rbp) {
+  }
+
+  static expression(rbp) {
     let token = Context.Token;
     Parse.advance();
     let left = token.nud();
@@ -255,8 +256,9 @@ let Parse = {
     }
 
     return left;
-  },
-  attribute: function () {
+  }
+
+  static attribute() {
     let token = Context.Token;
 
     if (token.id === "~") {
@@ -269,8 +271,9 @@ let Parse = {
 
     Parse.advance();
     return token;
-  },
-  statement: function () {
+  }
+
+  static statement() {
     let token = Context.Token;
 
     if (token.std) {
@@ -294,8 +297,9 @@ let Parse = {
     }
 
     return expression;
-  },
-  statements: function () {
+  }
+
+  static statements() {
     let statements = [];
 
     while (true) {
@@ -314,13 +318,15 @@ let Parse = {
       : statements.length === 1
       ? statements[0]
       : statements;
-  },
-  block: function () {
+  }
+
+  static block() {
     let token = Context.Token;
     Parse.advance("{");
     return token.std();
-  },
-  function: function (type, name) {
+  }
+
+  static function(type, name) {
     Context.Scope.define(name);
     name.arity = "function";
     name.name = name.value;
@@ -372,8 +378,9 @@ let Parse = {
     Context.Scope.pop();
 
     return name;
-  },
-  variable: function (type, name) {
+  }
+
+  static variable(type, name) {
     let definitions = [];
     let first = true;
 
@@ -423,7 +430,7 @@ let Parse = {
       ? definitions[0]
       : definitions;
   }
-};
+}
 
 class Recovery {
   static expectSemicolon() {
