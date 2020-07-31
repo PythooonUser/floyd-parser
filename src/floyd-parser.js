@@ -490,8 +490,8 @@ class Analysis {
   }
 }
 
-let Define = {
-  Symbol: function (id, bp) {
+class Define {
+  static Symbol(id, bp) {
     let symbol = Context.SymbolTable[id];
     bp = bp || 0;
 
@@ -507,8 +507,9 @@ let Define = {
     }
 
     return symbol;
-  },
-  Infix: function (id, bp, led) {
+  }
+
+  static Infix(id, bp, led) {
     let symbol = Define.Symbol(id, bp);
 
     symbol.led =
@@ -521,8 +522,9 @@ let Define = {
       };
 
     return symbol;
-  },
-  Infixr: function (id, bp, led) {
+  }
+
+  static Infixr(id, bp, led) {
     let symbol = Define.Symbol(id, bp);
 
     symbol.led =
@@ -535,8 +537,9 @@ let Define = {
       };
 
     return symbol;
-  },
-  Prefix: function (id, nud) {
+  }
+
+  static Prefix(id, nud) {
     let symbol = Define.Symbol(id);
 
     symbol.nud =
@@ -549,8 +552,9 @@ let Define = {
       };
 
     return symbol;
-  },
-  Assignment: function (id) {
+  }
+
+  static Assignment(id) {
     return Define.Infixr(id, 10, function (left) {
       if (left.id !== "." && left.id !== "[" && left.arity !== "name") {
         Error.error("Bad left value", left.range);
@@ -563,8 +567,9 @@ let Define = {
 
       return this;
     });
-  },
-  Constant: function (id, value) {
+  }
+
+  static Constant(id, value) {
     let symbol = Define.Symbol(id);
 
     symbol.nud = function () {
@@ -576,18 +581,20 @@ let Define = {
 
     symbol.value = value;
     return symbol;
-  },
-  Statement: function (id, std) {
+  }
+
+  static Statement(id, std) {
     let symbol = Define.Symbol(id);
     symbol.std = std;
     return symbol;
-  },
-  Directive: function (id, did) {
+  }
+
+  static Directive(id, did) {
     let symbol = Define.Symbol(id);
     symbol.did = did;
     return symbol;
   }
-};
+}
 
 Define.Symbol(":");
 Define.Symbol(";");
