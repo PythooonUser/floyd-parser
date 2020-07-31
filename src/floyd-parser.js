@@ -56,27 +56,33 @@ const Language = [
   "write"
 ];
 
-let Error = {
-  error: function (message, range) {
-    this._diagnostic(message, range, 1);
-  },
-  warning: function (message, range) {
-    this._diagnostic(message, range, 2);
-  },
-  information: function (message, range) {
-    this._diagnostic(message, range, 3);
-  },
-  hint: function (message, range) {
-    this._diagnostic(message, range, 4);
-  },
-  _diagnostic: function (message, range, severity) {
-    Context.Errors.push({
-      message: `${message}`,
-      range: range,
-      severity: severity
-    });
+class Error {
+  static error(message, range) {
+    Error._diagnostic(message, range, 1);
   }
-};
+
+  static warning(message, range) {
+    Error._diagnostic(message, range, 2);
+  }
+
+  static information(message, range) {
+    Error._diagnostic(message, range, 3);
+  }
+
+  static hint(message, range) {
+    Error._diagnostic(message, range, 4);
+  }
+
+  static _diagnostic(message, range, severity) {
+    const diagnostic = {
+      message: `${message}`,
+      range,
+      severity
+    };
+
+    Context.Errors.push(diagnostic);
+  }
+}
 
 class Scope {
   constructor(parent) {
