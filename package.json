@@ -1,6 +1,6 @@
 {
   "name": "@pythooonuser/floyd-parser",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A parser for the programming language Floyd.",
   "main": "src/floyd-parser.js",
   "scripts": {
@@ -20,8 +20,8 @@
     "lex": "^1.7.9"
   },
   "devDependencies": {
-    "mocha": "^8.1.0",
-    "prettier": "^2.0.5"
+    "mocha": "^8.1.2",
+    "prettier": "^2.1.1"
   },
   "prettier": {
     "arrowParens": "avoid",
