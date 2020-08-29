@@ -10,8 +10,8 @@ class Lexer {
     this.length = 0;
     /** The current index in the source document. */
     this.index = -1;
-    /** The current index of whitespace, comment or directive trivia in the source document. */
-    this.triviaIndex = 0;
+    /** @type {Token[]} The current whitespace, comment or directive trivia Token objects. */
+    this.trivia = [];
   }
 
   /**
@@ -23,7 +23,7 @@ class Lexer {
     this.document = document;
     this.length = document.length;
     this.index = -1;
-    this.triviaIndex = 0;
+    this.trivia = [];
   }
 
   /**
@@ -32,11 +32,11 @@ class Lexer {
    * @return {Token|null} The next Token object in the source document.
    */
   advance() {
-    const character = this._next();
+    let character = this._next();
 
     if (character === null) {
       if (this.index === this.length) {
-        return this._makeToken(TokenKind.EndOfFile, 0);
+        return this._makeToken(this.index, 0, TokenKind.EndOfFile);
       }
 
       if (this.index > this.length) {
@@ -45,9 +45,42 @@ class Lexer {
     }
 
     if (" \t\r\n".includes(character)) {
+      let start = this.index;
+
+      while (" \t\r\n".includes(this._look())) {
+        this._next();
+      }
+
+      this._makeTriviaToken(
+        start,
+        this.index + 1 - start,
+        TokenKind.Whitespace
+      );
+
+      return this.advance();
     }
 
-    return this._makeToken(TokenKind.UnkownToken, 1);
+    if (character === "/" && this._look() === "/") {
+      let start = this.index;
+
+      while (this._look() && this._look() !== "\n") {
+        this._next();
+      }
+
+      if (this._look() === "\n") {
+        this._next();
+      }
+
+      this._makeTriviaToken(
+        start,
+        this.index + 1 - start,
+        TokenKind.SingleLineComment
+      );
+
+      return this.advance();
+    }
+
+    return this._makeToken(this.index, 1, TokenKind.UnknownToken);
   }
 
   /**
@@ -71,16 +104,44 @@ class Lexer {
   }
 
   /**
+   * Returns the next character in the source document without advancing the internal state.
+   *
+   * @return {string|null} The next character in the source document.
+   */
+  _look() {
+    const index = this.index + 1;
+
+    if (index >= this.length) {
+      return null;
+    }
+
+    return this.document[index];
+  }
+
+  /**
    * Creates a new Token object.
    *
-   * @param {TokenKind} kind The kind of token.
+   * @param {number} start The start index of the token.
    * @param {number} length The length of the token.
+   * @param {TokenKind} kind The kind of token.
    * @return {Token} The Token object created.
    */
-  _makeToken(kind, length) {
-    const token = new Token(this.index, this.triviaIndex, length, kind);
-    this.triviaIndex = this.index + 1;
+  _makeToken(start, length, kind) {
+    const token = new Token(start, length, kind, this.trivia);
+    this.trivia = [];
     return token;
+  }
+
+  /**
+   * Creates a new trivia Token object.
+   *
+   * @param {number} start The start index of the token.
+   * @param {number} length The length of the token.
+   * @param {TokenKind} kind The kind of token.
+   */
+  _makeTriviaToken(start, length, kind) {
+    const token = new Token(start, length, kind);
+    this.trivia.push(token);
   }
 }
 

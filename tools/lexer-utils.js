@@ -2,12 +2,14 @@ const { Lexer } = require("../src/floyd-lexer");
 const { TokenKind } = require("../src/token-kind");
 
 const arguments = process.argv;
+let document = "";
+
 if (arguments.length < 3) {
-  console.log("USAGE: node lexer-utils.js <floyd-code>");
-  return;
+  console.log("USAGE: node lexer-utils.js <floyd-code>\n");
+} else {
+  document = arguments[2];
 }
 
-const document = arguments[2];
 const lexer = new Lexer();
 lexer.reset(document);
 

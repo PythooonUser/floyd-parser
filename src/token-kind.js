@@ -2,7 +2,11 @@
 class TokenKind {}
 
 TokenKind.EndOfFile = 0;
-TokenKind.UnkownToken = 1;
+TokenKind.UnknownToken = 1;
+
+TokenKind.Whitespace = 2;
+TokenKind.SingleLineComment = 3;
+TokenKind.MultiLineComment = 4;
 
 // Keywords
 TokenKind.Name = 100;
@@ -79,6 +83,15 @@ TokenKind.Dot = 310;
 TokenKind.SingleQuote = 311;
 TokenKind.DoubleQuote = 312;
 
+// Directives
+TokenKind.UnknownDirectiveKeyword = 400;
+
+TokenKind.IncludeDirectiveKeyword = 401;
+TokenKind.DefineDirectiveKeyword = 402;
+TokenKind.IfDirectiveKeyword = 403;
+TokenKind.IfNotDirectiveKeyword = 404;
+TokenKind.EndIfDirectiveKeyword = 405;
+
 /** Provides a mapping from characters to keyword TokenKind objects. */
 TokenKind.KeywordTokenMap = {
   void: TokenKind.VoidKeyword,
@@ -151,9 +164,21 @@ TokenKind.DelimiterTokenMap = {
   '"': TokenKind.DoubleQuote
 };
 
+/** Provides a mapping from characters to directive TokenKind objects. */
+TokenKind.DirectiveTokenMap = {
+  "#include": TokenKind.IncludeDirectiveKeyword,
+  "#define": TokenKind.DefineDirectiveKeyword,
+  "#ifdef": TokenKind.IfDirectiveKeyword,
+  "#ifndef": TokenKind.IfNotDirectiveKeyword,
+  "#endif": TokenKind.EndIfDirectiveKeyword
+};
+
 TokenKind.TokenKindMap = {
   [TokenKind.EndOfFile]: "TokenKind.EndOfFile",
-  [TokenKind.UnkownToken]: "TokenKind.UnkownToken",
+  [TokenKind.UnknownToken]: "TokenKind.UnknownToken",
+  [TokenKind.Whitespace]: "TokenKind.Whitespace",
+  [TokenKind.SingleLineComment]: "TokenKind.SingleLineComment",
+  [TokenKind.MultiLineComment]: "TokenKind.MultiLineComment",
   [TokenKind.Name]: "TokenKind.Name",
   [TokenKind.VoidKeyword]: "TokenKind.VoidKeyword",
   [TokenKind.IntKeyword]: "TokenKind.IntKeyword",
@@ -220,7 +245,13 @@ TokenKind.TokenKindMap = {
   [TokenKind.Semicolon]: "TokenKind.Semicolon",
   [TokenKind.Dot]: "TokenKind.Dot",
   [TokenKind.SingleQuote]: "TokenKind.SingleQuote",
-  [TokenKind.DoubleQuote]: "TokenKind.DoubleQuote"
+  [TokenKind.DoubleQuote]: "TokenKind.DoubleQuote",
+  [TokenKind.UnknownDirectiveKeyword]: "TokenKind.UnknownDirectiveKeyword",
+  [TokenKind.IncludeDirectiveKeyword]: "TokenKind.IncludeDirectiveKeyword",
+  [TokenKind.DefineDirectiveKeyword]: "TokenKind.DefineDirectiveKeyword",
+  [TokenKind.IfDirectiveKeyword]: "TokenKind.IfDirectiveKeyword",
+  [TokenKind.IfNotDirectiveKeyword]: "TokenKind.IfNotDirectiveKeyword",
+  [TokenKind.EndIfDirectiveKeyword]: "TokenKind.EndIfDirectiveKeyword"
 };
 
 exports.TokenKind = TokenKind;

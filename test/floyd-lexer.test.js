@@ -29,12 +29,6 @@ describe("Lexer", function () {
     );
 
     assert.strictEqual(
-      actual.triviaStart,
-      expected.triviaStart,
-      "Token trivia start indices should be equal."
-    );
-
-    assert.strictEqual(
       actual.length,
       expected.length,
       "Token lengths should be equal."
@@ -45,6 +39,8 @@ describe("Lexer", function () {
       expected.kind,
       "Token kinds should be equal."
     );
+
+    assertTokenArraysEqual(actual.trivia, expected.trivia);
   };
 
   /**
@@ -94,9 +90,9 @@ describe("Lexer", function () {
       const expected = [
         {
           start: 0,
-          triviaStart: 0,
           length: 0,
-          kind: TokenKind.EndOfFile
+          kind: TokenKind.EndOfFile,
+          trivia: []
         }
       ];
 
@@ -111,16 +107,42 @@ describe("Lexer", function () {
       /** @type {Token[]} */
       const expected = [
         {
-          start: 0,
-          triviaStart: 0,
-          length: 1,
-          kind: TokenKind.UnkownToken
-        },
-        {
           start: 1,
-          triviaStart: 1,
           length: 0,
-          kind: TokenKind.EndOfFile
+          kind: TokenKind.EndOfFile,
+          trivia: [
+            {
+              start: 0,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: []
+            }
+          ]
+        }
+      ];
+
+      const actual = getTokens(document);
+
+      assertTokenArraysEqual(actual, expected);
+    });
+
+    it("Should handle End Of File with leading comment trivia", function () {
+      const document = `// Hello World`;
+
+      /** @type {Token[]} */
+      const expected = [
+        {
+          start: 14,
+          length: 0,
+          kind: TokenKind.EndOfFile,
+          trivia: [
+            {
+              start: 0,
+              length: 14,
+              kind: TokenKind.SingleLineComment,
+              trivia: []
+            }
+          ]
         }
       ];
 
