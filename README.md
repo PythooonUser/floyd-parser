@@ -31,3 +31,7 @@ const { errors } = analyse(ast);
 $ npm ci
 $ npm test
 ```
+
+## Utils
+
+You can use `$ node tools/lexer-utils.js <floyd-code>` to generate a JSON structure of Token objects from an input string. This can be used to feed into any lexer tests.
