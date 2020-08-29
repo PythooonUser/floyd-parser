@@ -94,7 +94,7 @@ describe("Lexer", function () {
       const expected = [
         {
           start: 0,
-          triviaStart: -1,
+          triviaStart: 0,
           length: 0,
           kind: TokenKind.EndOfFile
         }
@@ -112,13 +112,13 @@ describe("Lexer", function () {
       const expected = [
         {
           start: 0,
-          triviaStart: -1,
+          triviaStart: 0,
           length: 1,
           kind: TokenKind.UnkownToken
         },
         {
           start: 1,
-          triviaStart: -1,
+          triviaStart: 1,
           length: 0,
           kind: TokenKind.EndOfFile
         }
