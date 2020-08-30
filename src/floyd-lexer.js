@@ -54,7 +54,20 @@ class Lexer {
       return this.advance();
     }
 
-    return this._makeToken(this.index, 1, TokenKind.UnknownToken);
+    if (
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_".includes(
+        character
+      )
+    ) {
+      return this.parseName();
+    }
+
+    return this._makeToken(
+      this.index,
+      1,
+      TokenKind.UnknownToken,
+      TokenError.UnknownToken
+    );
   }
 
   /**
@@ -82,8 +95,8 @@ class Lexer {
       this._next();
     }
 
-    const end = this.index + 1 - start;
-    this._makeTriviaToken(start, end, TokenKind.Whitespace);
+    const length = this.index + 1 - start;
+    this._makeTriviaToken(start, length, TokenKind.Whitespace);
   }
 
   /**
@@ -97,8 +110,8 @@ class Lexer {
       this._next();
     }
 
-    const end = this.index + 1 - start;
-    this._makeTriviaToken(start, end, TokenKind.SingleLineComment);
+    const length = this.index + 1 - start;
+    this._makeTriviaToken(start, length, TokenKind.SingleLineComment);
   }
 
   /**
@@ -127,8 +140,31 @@ class Lexer {
       this._next(); // Consume "/".
     }
 
-    const end = this.index + 1 - start;
-    this._makeTriviaToken(start, end, TokenKind.MultiLineComment, error);
+    const length = this.index + 1 - start;
+    this._makeTriviaToken(start, length, TokenKind.MultiLineComment, error);
+  }
+
+  /**
+   * Parses Name or Reserved Name or Keyword.
+   *
+   * @return {Token|null} The Name Token object or null.
+   */
+  parseName() {
+    const start = this.index;
+
+    while (
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_".includes(
+        this._look()
+      )
+    ) {
+      this._next();
+    }
+
+    const length = this.index + 1 - start;
+    const content = this.document.slice(start, start + length);
+    const kind = TokenKind.KeywordTokenMap[content];
+
+    return this._makeToken(start, length, kind ? kind : TokenKind.Name);
   }
 
   /**

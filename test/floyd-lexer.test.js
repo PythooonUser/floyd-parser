@@ -90,7 +90,7 @@ describe("Lexer", function () {
   };
 
   describe("End Of File", function () {
-    it("Should handle End Of File", function () {
+    it("Should handle end of file", function () {
       const document = ``;
 
       /** @type {Token[]} */
@@ -109,7 +109,33 @@ describe("Lexer", function () {
       assertTokenArraysEqual(actual, expected);
     });
 
-    it("Should handle End Of File with whitespace trivia", function () {
+    it("Should handle unknown token", function () {
+      const document = `§`;
+
+      /** @type {Token[]} */
+      const expected = [
+        {
+          start: 0,
+          length: 1,
+          kind: TokenKind.UnknownToken,
+          trivia: [],
+          error: TokenError.UnknownToken
+        },
+        {
+          start: 1,
+          length: 0,
+          kind: TokenKind.EndOfFile,
+          trivia: [],
+          error: null
+        }
+      ];
+
+      const actual = getTokens(document);
+
+      assertTokenArraysEqual(actual, expected);
+    });
+
+    it("Should handle whitespace trivia", function () {
       const document = ` `;
 
       /** @type {Token[]} */
@@ -136,7 +162,7 @@ describe("Lexer", function () {
       assertTokenArraysEqual(actual, expected);
     });
 
-    it("Should handle End Of File with single line comment trivia", function () {
+    it("Should handle single line comment trivia", function () {
       const document = `// Hello World`;
 
       /** @type {Token[]} */
@@ -163,7 +189,7 @@ describe("Lexer", function () {
       assertTokenArraysEqual(actual, expected);
     });
 
-    it("Should handle End Of File with whitespace and single line comment trivia", function () {
+    it("Should handle whitespace and single line comment trivia", function () {
       const document = `// Hello World\n `;
 
       /** @type {Token[]} */
@@ -197,7 +223,7 @@ describe("Lexer", function () {
       assertTokenArraysEqual(actual, expected);
     });
 
-    it("Should handle End Of File with multi line comment trivia", function () {
+    it("Should handle multi line comment trivia", function () {
       const document = `/* Hello World */`;
 
       /** @type {Token[]} */
@@ -224,7 +250,7 @@ describe("Lexer", function () {
       assertTokenArraysEqual(actual, expected);
     });
 
-    it("Should handle End Of File with incomplete multi line comment trivia", function () {
+    it("Should handle incomplete multi line comment trivia", function () {
       const document = `/* Hello World *`;
 
       /** @type {Token[]} */
@@ -251,7 +277,7 @@ describe("Lexer", function () {
       assertTokenArraysEqual(actual, expected);
     });
 
-    it("Should handle End Of File with whitespace and multi line comment trivia", function () {
+    it("Should handle whitespace and multi line comment trivia", function () {
       const document = `/* Hello World */ `;
 
       /** @type {Token[]} */
@@ -276,6 +302,375 @@ describe("Lexer", function () {
               error: null
             }
           ],
+          error: null
+        }
+      ];
+
+      const actual = getTokens(document);
+
+      assertTokenArraysEqual(actual, expected);
+    });
+  });
+
+  describe("Names", function () {
+    it("Should handle names", function () {
+      const document = `testname test_name _testName testName0`;
+
+      /** @type {Token[]} */
+      const expected = [
+        {
+          start: 0,
+          length: 8,
+          kind: TokenKind.Name,
+          trivia: [],
+          error: null
+        },
+        {
+          start: 9,
+          length: 9,
+          kind: TokenKind.Name,
+          trivia: [
+            {
+              start: 8,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 19,
+          length: 9,
+          kind: TokenKind.Name,
+          trivia: [
+            {
+              start: 18,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 29,
+          length: 9,
+          kind: TokenKind.Name,
+          trivia: [
+            {
+              start: 28,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 38,
+          length: 0,
+          kind: TokenKind.EndOfFile,
+          trivia: [],
+          error: null
+        }
+      ];
+
+      const actual = getTokens(document);
+
+      assertTokenArraysEqual(actual, expected);
+    });
+
+    it("Should handle keywords", function () {
+      const document = `void int string object class abstract if else switch case default break return halt do while for quit super`;
+
+      /** @type {Token[]} */
+      const expected = [
+        {
+          start: 0,
+          length: 4,
+          kind: TokenKind.VoidKeyword,
+          trivia: [],
+          error: null
+        },
+        {
+          start: 5,
+          length: 3,
+          kind: TokenKind.IntKeyword,
+          trivia: [
+            {
+              start: 4,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 9,
+          length: 6,
+          kind: TokenKind.StringKeyword,
+          trivia: [
+            {
+              start: 8,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 16,
+          length: 6,
+          kind: TokenKind.ObjectKeyword,
+          trivia: [
+            {
+              start: 15,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 23,
+          length: 5,
+          kind: TokenKind.ClassKeyword,
+          trivia: [
+            {
+              start: 22,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 29,
+          length: 8,
+          kind: TokenKind.AbstractKeyword,
+          trivia: [
+            {
+              start: 28,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 38,
+          length: 2,
+          kind: TokenKind.IfKeyword,
+          trivia: [
+            {
+              start: 37,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 41,
+          length: 4,
+          kind: TokenKind.ElseKeyword,
+          trivia: [
+            {
+              start: 40,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 46,
+          length: 6,
+          kind: TokenKind.SwitchKeyword,
+          trivia: [
+            {
+              start: 45,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 53,
+          length: 4,
+          kind: TokenKind.CaseKeyword,
+          trivia: [
+            {
+              start: 52,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 58,
+          length: 7,
+          kind: TokenKind.DefaultKeyword,
+          trivia: [
+            {
+              start: 57,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 66,
+          length: 5,
+          kind: TokenKind.BreakKeyword,
+          trivia: [
+            {
+              start: 65,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 72,
+          length: 6,
+          kind: TokenKind.ReturnKeyword,
+          trivia: [
+            {
+              start: 71,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 79,
+          length: 4,
+          kind: TokenKind.HaltKeyword,
+          trivia: [
+            {
+              start: 78,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 84,
+          length: 2,
+          kind: TokenKind.DoKeyword,
+          trivia: [
+            {
+              start: 83,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 87,
+          length: 5,
+          kind: TokenKind.WhileKeyword,
+          trivia: [
+            {
+              start: 86,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 93,
+          length: 3,
+          kind: TokenKind.ForKeyword,
+          trivia: [
+            {
+              start: 92,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 97,
+          length: 4,
+          kind: TokenKind.QuitKeyword,
+          trivia: [
+            {
+              start: 96,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 102,
+          length: 5,
+          kind: TokenKind.SuperKeyword,
+          trivia: [
+            {
+              start: 101,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 107,
+          length: 0,
+          kind: TokenKind.EndOfFile,
+          trivia: [],
           error: null
         }
       ];
