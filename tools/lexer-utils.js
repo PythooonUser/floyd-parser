@@ -1,5 +1,6 @@
 const { Lexer } = require("../src/floyd-lexer");
 const { TokenKind } = require("../src/token-kind");
+const { TokenError } = require("../src/token-error");
 
 const arguments = process.argv;
 let document = "";
@@ -27,6 +28,11 @@ console.log(
     (key, value) => {
       if (key === "kind") {
         return TokenKind.TokenKindMap[value];
+      }
+
+      if (key === "error") {
+        const error = TokenError.TokenErrorMap[value];
+        return error ? error : null;
       }
 
       return value;

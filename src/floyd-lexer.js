@@ -1,5 +1,6 @@
 const { Token } = require("./token");
 const { TokenKind } = require("./token-kind");
+const { TokenError } = require("./token-error");
 
 /** Generates a stream of Token objects from a source document. */
 class Lexer {
@@ -35,52 +36,99 @@ class Lexer {
     let character = this._next();
 
     if (character === null) {
-      if (this.index === this.length) {
-        return this._makeToken(this.index, 0, TokenKind.EndOfFile);
-      }
-
-      if (this.index > this.length) {
-        return null;
-      }
+      return this.handleEndOfFile();
     }
 
     if (" \t\r\n".includes(character)) {
-      let start = this.index;
-
-      while (" \t\r\n".includes(this._look())) {
-        this._next();
-      }
-
-      this._makeTriviaToken(
-        start,
-        this.index + 1 - start,
-        TokenKind.Whitespace
-      );
-
+      this.parseWhitespaceTrivia();
       return this.advance();
     }
 
     if (character === "/" && this._look() === "/") {
-      let start = this.index;
+      this.parseSingleLineCommentTrivia();
+      return this.advance();
+    }
 
-      while (this._look() && this._look() !== "\n") {
-        this._next();
-      }
-
-      if (this._look() === "\n") {
-        this._next();
-      }
-
-      this._makeTriviaToken(
-        start,
-        this.index + 1 - start,
-        TokenKind.SingleLineComment
-      );
-
+    if (character === "/" && this._look() === "*") {
+      this.parseMultiLineCommentTrivia();
       return this.advance();
     }
 
     return this._makeToken(this.index, 1, TokenKind.UnknownToken);
+  }
+
+  /**
+   * Handles End Of File.
+   *
+   * @return {Token|null} The End Of File Token object or null.
+   */
+  handleEndOfFile() {
+    if (this.index === this.length) {
+      return this._makeToken(this.index, 0, TokenKind.EndOfFile);
+    }
+
+    if (this.index > this.length) {
+      return null;
+    }
+  }
+
+  /**
+   * Parses whitespace trivia.
+   */
+  parseWhitespaceTrivia() {
+    const start = this.index;
+
+    while (" \t\r\n".includes(this._look())) {
+      this._next();
+    }
+
+    const end = this.index + 1 - start;
+    this._makeTriviaToken(start, end, TokenKind.Whitespace);
+  }
+
+  /**
+   * Parses single line comment trivia.
+   */
+  parseSingleLineCommentTrivia() {
+    const start = this.index;
+    this._next(); // Consume "/".
+
+    while (this._look() && this._look() !== "\n") {
+      this._next();
+    }
+
+    const end = this.index + 1 - start;
+    this._makeTriviaToken(start, end, TokenKind.SingleLineComment);
+  }
+
+  /**
+   * Parses multi line comment trivia.
+   */
+  parseMultiLineCommentTrivia() {
+    const start = this.index;
+    let error = null;
+    this._next(); // Consume "*".
+
+    while (true) {
+      if (!this._look()) {
+        error = TokenError.UnexpectedEndOfFile;
+        break;
+      }
+
+      if (this._look() === "*" && this._look(2) === "/") {
+        break;
+      }
+
+      this._next();
+    }
+
+    if (this._look()) {
+      this._next(); // Consume "*".
+      this._next(); // Consume "/".
+    }
+
+    const end = this.index + 1 - start;
+    this._makeTriviaToken(start, end, TokenKind.MultiLineComment, error);
   }
 
   /**
@@ -106,10 +154,11 @@ class Lexer {
   /**
    * Returns the next character in the source document without advancing the internal state.
    *
+   * @param {number} step The step size. Defaults to 1.
    * @return {string|null} The next character in the source document.
    */
-  _look() {
-    const index = this.index + 1;
+  _look(step = 1) {
+    const index = this.index + step;
 
     if (index >= this.length) {
       return null;
@@ -124,10 +173,11 @@ class Lexer {
    * @param {number} start The start index of the token.
    * @param {number} length The length of the token.
    * @param {TokenKind} kind The kind of token.
+   * @param {TokenError} error The error of token in case of parse issues.
    * @return {Token} The Token object created.
    */
-  _makeToken(start, length, kind) {
-    const token = new Token(start, length, kind, this.trivia);
+  _makeToken(start, length, kind, error) {
+    const token = new Token(start, length, kind, this.trivia, error);
     this.trivia = [];
     return token;
   }
@@ -138,9 +188,10 @@ class Lexer {
    * @param {number} start The start index of the token.
    * @param {number} length The length of the token.
    * @param {TokenKind} kind The kind of token.
+   * @param {TokenError} error The error of token in case of parse issues.
    */
-  _makeTriviaToken(start, length, kind) {
-    const token = new Token(start, length, kind);
+  _makeTriviaToken(start, length, kind, error) {
+    const token = new Token(start, length, kind, [], error);
     this.trivia.push(token);
   }
 }
