@@ -743,5 +743,111 @@ describe("Lexer", function () {
         assertTokenArraysEqual(actual, expected);
       });
     });
+
+    describe("Strings", function () {
+      it("Should handle single-line string", function () {
+        const program = `"Hello World!"`;
+
+        /** @type {Token[]} */
+        const expected = [
+          {
+            start: 0,
+            length: 14,
+            kind: TokenKind.StringLiteral,
+            trivia: [],
+            error: null
+          },
+          {
+            start: 14,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            trivia: [],
+            error: null
+          }
+        ];
+
+        const actual = getTokens(program);
+
+        assertTokenArraysEqual(actual, expected);
+      });
+
+      it("Should handle multiline string", function () {
+        const program = `"Hello\nWorld!"`;
+
+        /** @type {Token[]} */
+        const expected = [
+          {
+            start: 0,
+            length: 14,
+            kind: TokenKind.StringLiteral,
+            trivia: [],
+            error: null
+          },
+          {
+            start: 14,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            trivia: [],
+            error: null
+          }
+        ];
+
+        const actual = getTokens(program);
+
+        assertTokenArraysEqual(actual, expected);
+      });
+
+      it("Should handle string with escape characters", function () {
+        const program = `"Hello \\World\\!^"`;
+
+        /** @type {Token[]} */
+        const expected = [
+          {
+            start: 0,
+            length: 17,
+            kind: TokenKind.StringLiteral,
+            trivia: [],
+            error: null
+          },
+          {
+            start: 17,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            trivia: [],
+            error: null
+          }
+        ];
+
+        const actual = getTokens(program);
+
+        assertTokenArraysEqual(actual, expected);
+      });
+
+      it("Should handle incomplete string", function () {
+        const program = `"Hello World!`;
+
+        /** @type {Token[]} */
+        const expected = [
+          {
+            start: 0,
+            length: 13,
+            kind: TokenKind.StringLiteral,
+            trivia: [],
+            error: TokenError.UnexpectedEndOfFile
+          },
+          {
+            start: 13,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            trivia: [],
+            error: null
+          }
+        ];
+
+        const actual = getTokens(program);
+
+        assertTokenArraysEqual(actual, expected);
+      });
+    });
   });
 });

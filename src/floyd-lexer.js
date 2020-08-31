@@ -66,6 +66,10 @@ class Lexer {
       return this.parseNumberLiteral();
     }
 
+    if (character === '"') {
+      return this.parseStringLiteral();
+    }
+
     return this._makeToken(
       this.index,
       1,
@@ -75,9 +79,9 @@ class Lexer {
   }
 
   /**
-   * Handles End Of File.
+   * Handles end of file.
    *
-   * @return {Token|null} The End Of File Token object or null.
+   * @return {Token|null} The end of file Token object or null.
    */
   handleEndOfFile() {
     if (this.index === this.length) {
@@ -149,9 +153,9 @@ class Lexer {
   }
 
   /**
-   * Parses Name or Reserved Name or Keyword.
+   * Parses a name or reserved name or keyword.
    *
-   * @return {Token|null} The Name Token object or null.
+   * @return {Token|null} The name Token object or null.
    */
   parseName() {
     const start = this.index;
@@ -171,6 +175,11 @@ class Lexer {
     return this._makeToken(start, length, kind ? kind : TokenKind.Name);
   }
 
+  /**
+   * Parses a number literal.
+   *
+   * @return {Token|null} The number literal Token object or null.
+   */
   parseNumberLiteral() {
     const start = this.index;
 
@@ -180,6 +189,36 @@ class Lexer {
 
     const length = this.index + 1 - start;
     return this._makeToken(start, length, TokenKind.NumberLiteral);
+  }
+
+  /**
+   * Parses a string literal.
+   *
+   * @return {Token|null} The string literal Token object or null.
+   */
+  parseStringLiteral() {
+    const start = this.index;
+    let error = null;
+
+    while (true) {
+      if (!this._look()) {
+        error = TokenError.UnexpectedEndOfFile;
+        break;
+      }
+
+      if (this._look() === '"') {
+        break;
+      }
+
+      this._next();
+    }
+
+    if (this._look()) {
+      this._next(); // Consume '"'.
+    }
+
+    const length = this.index + 1 - start;
+    return this._makeToken(start, length, TokenKind.StringLiteral, error);
   }
 
   /**
