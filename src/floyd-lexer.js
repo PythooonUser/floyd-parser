@@ -62,6 +62,10 @@ class Lexer {
       return this.parseName();
     }
 
+    if ("0123456789".includes(character)) {
+      return this.parseNumberLiteral();
+    }
+
     return this._makeToken(
       this.index,
       1,
@@ -165,6 +169,17 @@ class Lexer {
     const kind = TokenKind.KeywordTokenMap[content];
 
     return this._makeToken(start, length, kind ? kind : TokenKind.Name);
+  }
+
+  parseNumberLiteral() {
+    const start = this.index;
+
+    while ("0123456789".includes(this._look())) {
+      this._next();
+    }
+
+    const length = this.index + 1 - start;
+    return this._makeToken(start, length, TokenKind.NumberLiteral);
   }
 
   /**

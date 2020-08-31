@@ -108,7 +108,9 @@ describe("Lexer", function () {
 
       assertTokenArraysEqual(actual, expected);
     });
+  });
 
+  describe("Unkown Tokens", function () {
     it("Should handle unknown token", function () {
       const document = `§`;
 
@@ -134,7 +136,9 @@ describe("Lexer", function () {
 
       assertTokenArraysEqual(actual, expected);
     });
+  });
 
+  describe("Trivia", function () {
     it("Should handle whitespace trivia", function () {
       const document = ` `;
 
@@ -678,6 +682,66 @@ describe("Lexer", function () {
       const actual = getTokens(document);
 
       assertTokenArraysEqual(actual, expected);
+    });
+  });
+
+  describe("Literals", function () {
+    describe("Numbers", function () {
+      it("Should handle numbers", function () {
+        const program = `0 1 1234`;
+
+        /** @type {Token[]} */
+        const expected = [
+          {
+            start: 0,
+            length: 1,
+            kind: TokenKind.NumberLiteral,
+            trivia: [],
+            error: null
+          },
+          {
+            start: 2,
+            length: 1,
+            kind: TokenKind.NumberLiteral,
+            trivia: [
+              {
+                start: 1,
+                length: 1,
+                kind: TokenKind.Whitespace,
+                trivia: [],
+                error: null
+              }
+            ],
+            error: null
+          },
+          {
+            start: 4,
+            length: 4,
+            kind: TokenKind.NumberLiteral,
+            trivia: [
+              {
+                start: 3,
+                length: 1,
+                kind: TokenKind.Whitespace,
+                trivia: [],
+                error: null
+              }
+            ],
+            error: null
+          },
+          {
+            start: 8,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            trivia: [],
+            error: null
+          }
+        ];
+
+        const actual = getTokens(program);
+
+        assertTokenArraysEqual(actual, expected);
+      });
     });
   });
 });

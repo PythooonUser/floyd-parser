@@ -8,6 +8,9 @@ TokenKind.Whitespace = 2;
 TokenKind.SingleLineComment = 3;
 TokenKind.MultiLineComment = 4;
 
+TokenKind.StringLiteral = 5;
+TokenKind.NumberLiteral = 6;
+
 // Keywords
 TokenKind.Name = 100;
 
@@ -179,6 +182,8 @@ TokenKind.TokenKindMap = {
   [TokenKind.Whitespace]: "TokenKind.Whitespace",
   [TokenKind.SingleLineComment]: "TokenKind.SingleLineComment",
   [TokenKind.MultiLineComment]: "TokenKind.MultiLineComment",
+  [TokenKind.StringLiteral]: "TokenKind.StringLiteral",
+  [TokenKind.NumberLiteral]: "TokenKind.NumberLiteral",
   [TokenKind.Name]: "TokenKind.Name",
   [TokenKind.VoidKeyword]: "TokenKind.VoidKeyword",
   [TokenKind.IntKeyword]: "TokenKind.IntKeyword",
