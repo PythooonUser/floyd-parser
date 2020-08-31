@@ -70,6 +70,14 @@ class Lexer {
       return this.parseStringLiteral();
     }
 
+    if ("<>+-&|^!=~%/*:?.".includes(character)) {
+      return this.parseOperator();
+    }
+
+    if ("(){}[],;".includes(character)) {
+      return this.parseDelimiter();
+    }
+
     return this._makeToken(
       this.index,
       1,
@@ -219,6 +227,46 @@ class Lexer {
 
     const length = this.index + 1 - start;
     return this._makeToken(start, length, TokenKind.StringLiteral, error);
+  }
+
+  /**
+   * Parses an operator.
+   *
+   * @return {Token|null} The operator Token object or null.
+   */
+  parseOperator() {
+    const start = this.index;
+
+    const firstCharacter = this.document[this.index];
+    let kind = TokenKind.OperatorTokenMap[firstCharacter];
+
+    const secondCharacter = this._look();
+    if ("<>+-&|=".includes(secondCharacter)) {
+      const extendedKind =
+        TokenKind.OperatorTokenMap[firstCharacter + secondCharacter];
+      if (extendedKind) {
+        this._next(); // Consume second part of operator.
+        kind = extendedKind;
+      }
+    }
+
+    const length = this.index + 1 - start;
+    return this._makeToken(start, length, kind);
+  }
+
+  /**
+   * Parses a delimiter.
+   *
+   * @return {Token|null} The delimiter Token object or null.
+   */
+  parseDelimiter() {
+    const start = this.index;
+
+    const character = this.document[this.index];
+    const kind = TokenKind.DelimiterTokenMap[character];
+
+    const length = this.index + 1 - start;
+    return this._makeToken(start, length, kind);
   }
 
   /**

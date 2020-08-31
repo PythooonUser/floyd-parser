@@ -40,36 +40,37 @@ TokenKind.QuitKeyword = 118;
 TokenKind.SuperKeyword = 119;
 
 // Operators
-TokenKind.UnknownOperator = 200;
-
-TokenKind.BinaryLeftShiftOperator = 201;
-TokenKind.BinaryRightShiftOperator = 202;
-TokenKind.IncrementOperator = 203;
-TokenKind.DecrementOperator = 204;
-TokenKind.AndOperator = 205;
-TokenKind.BinaryAndOperator = 206;
-TokenKind.OrOperator = 207;
-TokenKind.BinaryOrOperator = 208;
-TokenKind.BinaryXorOperator = 209;
-TokenKind.LessThanOrEqualOperator = 210;
-TokenKind.GreaterThanOrEqualOperator = 211;
-TokenKind.LessThanOperator = 212;
-TokenKind.GreaterThanOperator = 213;
-TokenKind.NotEqualOperator = 214;
-TokenKind.EqualOperator = 215;
-TokenKind.NotOperator = 216;
-TokenKind.BinaryNotOperator = 217; // Also attribute negating operator.
-TokenKind.ModuloAssignmentOperator = 218;
-TokenKind.DivisionAssignmentOperator = 219;
-TokenKind.MultiplicationAssignmentOperator = 220;
-TokenKind.AdditionAssignmentOperator = 221;
-TokenKind.SubtractionAssignmentOperator = 222;
-TokenKind.AdditionOperator = 223;
-TokenKind.SubtractionOperator = 224;
-TokenKind.ModuloOperator = 225;
-TokenKind.DivisionOperator = 226;
-TokenKind.MultiplicationOperator = 227;
-TokenKind.AssignmentOperator = 228;
+TokenKind.BinaryLeftShiftOperator = 200;
+TokenKind.BinaryRightShiftOperator = 201;
+TokenKind.IncrementOperator = 202;
+TokenKind.DecrementOperator = 203;
+TokenKind.AndOperator = 204;
+TokenKind.BinaryAndOperator = 205;
+TokenKind.OrOperator = 206;
+TokenKind.BinaryOrOperator = 207;
+TokenKind.BinaryXorOperator = 208;
+TokenKind.LessThanOrEqualOperator = 209;
+TokenKind.GreaterThanOrEqualOperator = 210;
+TokenKind.LessThanOperator = 211;
+TokenKind.GreaterThanOperator = 212;
+TokenKind.NotEqualOperator = 213;
+TokenKind.EqualOperator = 214;
+TokenKind.NotOperator = 215;
+TokenKind.BinaryNotOperator = 216; // Also attribute negating operator.
+TokenKind.ModuloAssignmentOperator = 217;
+TokenKind.DivisionAssignmentOperator = 218;
+TokenKind.MultiplicationAssignmentOperator = 219;
+TokenKind.AdditionAssignmentOperator = 220;
+TokenKind.SubtractionAssignmentOperator = 221;
+TokenKind.AdditionOperator = 222;
+TokenKind.SubtractionOperator = 223;
+TokenKind.ModuloOperator = 224;
+TokenKind.DivisionOperator = 225;
+TokenKind.MultiplicationOperator = 226;
+TokenKind.AssignmentOperator = 227;
+TokenKind.ColonOperator = 228;
+TokenKind.QuestionMarkOperator = 229;
+TokenKind.DotOperator = 230;
 
 // Delimiters
 TokenKind.LeftParen = 300;
@@ -79,12 +80,9 @@ TokenKind.RightBrace = 303;
 TokenKind.LeftBracket = 304;
 TokenKind.RightBracket = 305;
 TokenKind.Comma = 306;
-TokenKind.Colon = 307;
-TokenKind.QuestionMark = 308;
-TokenKind.Semicolon = 309;
-TokenKind.Dot = 310;
-TokenKind.SingleQuote = 311;
-TokenKind.DoubleQuote = 312;
+TokenKind.Semicolon = 307;
+TokenKind.SingleQuote = 308;
+TokenKind.DoubleQuote = 309;
 
 // Directives
 TokenKind.UnknownDirectiveKeyword = 400;
@@ -147,7 +145,10 @@ TokenKind.OperatorTokenMap = {
   "%": TokenKind.ModuloOperator,
   "/": TokenKind.DivisionOperator,
   "*": TokenKind.MultiplicationOperator,
-  "=": TokenKind.AssignmentOperator
+  "=": TokenKind.AssignmentOperator,
+  ":": TokenKind.ColonOperator,
+  "?": TokenKind.QuestionMarkOperator,
+  ".": TokenKind.DotOperator
 };
 
 /** Provides a mapping from characters to delimiter TokenKind objects. */
@@ -159,11 +160,8 @@ TokenKind.DelimiterTokenMap = {
   "[": TokenKind.LeftBracket,
   "]": TokenKind.RightBracket,
   ",": TokenKind.Comma,
-  ":": TokenKind.Colon,
-  "?": TokenKind.QuestionMark,
   ";": TokenKind.Semicolon,
-  ".": TokenKind.Dot,
-  "'": TokenKind.SingleQuote,
+  "'": TokenKind.SingleQuote, // Technically not part of language spec.
   '"': TokenKind.DoubleQuote
 };
 
@@ -204,7 +202,6 @@ TokenKind.TokenKindMap = {
   [TokenKind.ForKeyword]: "TokenKind.ForKeyword",
   [TokenKind.QuitKeyword]: "TokenKind.QuitKeyword",
   [TokenKind.SuperKeyword]: "TokenKind.SuperKeyword",
-  [TokenKind.UnknownOperator]: "TokenKind.UnknownOperator",
   [TokenKind.BinaryLeftShiftOperator]: "TokenKind.BinaryLeftShiftOperator",
   [TokenKind.BinaryRightShiftOperator]: "TokenKind.BinaryRightShiftOperator",
   [TokenKind.IncrementOperator]: "TokenKind.IncrementOperator",
@@ -238,6 +235,9 @@ TokenKind.TokenKindMap = {
   [TokenKind.DivisionOperator]: "TokenKind.DivisionOperator",
   [TokenKind.MultiplicationOperator]: "TokenKind.MultiplicationOperator",
   [TokenKind.AssignmentOperator]: "TokenKind.AssignmentOperator",
+  [TokenKind.ColonOperator]: "TokenKind.ColonOperator",
+  [TokenKind.QuestionMarkOperator]: "TokenKind.QuestionMarkOperator",
+  [TokenKind.DotOperator]: "TokenKind.DotOperator",
   [TokenKind.LeftParen]: "TokenKind.LeftParen",
   [TokenKind.RightParen]: "TokenKind.RightParen",
   [TokenKind.LeftBrace]: "TokenKind.LeftBrace",
@@ -245,10 +245,7 @@ TokenKind.TokenKindMap = {
   [TokenKind.LeftBracket]: "TokenKind.LeftBracket",
   [TokenKind.RightBracket]: "TokenKind.RightBracket",
   [TokenKind.Comma]: "TokenKind.Comma",
-  [TokenKind.Colon]: "TokenKind.Colon",
-  [TokenKind.QuestionMark]: "TokenKind.QuestionMark",
   [TokenKind.Semicolon]: "TokenKind.Semicolon",
-  [TokenKind.Dot]: "TokenKind.Dot",
   [TokenKind.SingleQuote]: "TokenKind.SingleQuote",
   [TokenKind.DoubleQuote]: "TokenKind.DoubleQuote",
   [TokenKind.UnknownDirectiveKeyword]: "TokenKind.UnknownDirectiveKeyword",
