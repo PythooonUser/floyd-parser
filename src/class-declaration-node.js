@@ -1,6 +1,7 @@
 const { NodeKind } = require("./node-kind");
 const { Node } = require("./node");
 const { Token } = require("./token");
+const { ClassBaseClauseNode } = require("./class-base-clause-node");
 
 class ClassDeclarationNode extends Node {
   constructor() {
@@ -14,8 +15,8 @@ class ClassDeclarationNode extends Node {
     this.abstractKeyword = null;
     /** @type {Token} */
     this.name = null;
-
-    // TODO: BaseClassClause
+    /** @type {ClassBaseClauseNode} */
+    this.baseClause = null;
     // TODO: ClassMembers
   }
 }

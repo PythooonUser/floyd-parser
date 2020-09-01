@@ -6,17 +6,30 @@ const { SourceDocumentNode } = require("./source-document-node");
 const { ParseContext } = require("./parse-context");
 const { ParseContextError } = require("./parse-context-error");
 const { ClassDeclarationNode } = require("./class-declaration-node");
+const { ClassBaseClauseNode } = require("./class-base-clause-node");
 
+/** Generates an abstract syntax tree from a source document. */
 class Parser {
+  /** Creates a new Parser. */
   constructor() {
+    /** @type {Lexer} */
     this.lexer = new Lexer();
+    /** @type {Token} */
     this.token = null;
   }
 
+  /**
+   * Resets the parser.
+   *
+   * @param {string} document The source document.
+   */
   _reset(document) {
     this.lexer.reset(document);
   }
 
+  /**
+   * Loads the next token from the lexer.
+   */
   _advance() {
     this.token = this.lexer.advance();
   }
@@ -63,15 +76,12 @@ class Parser {
     this._reset(document);
     this._advance();
 
-    let sourceDocumentNode = new SourceDocumentNode();
-    sourceDocumentNode.statements = this._parseElementList(
-      sourceDocumentNode,
-      ParseContext.SourceElements
-    );
-    sourceDocumentNode.endOfFile = this._consume(TokenKind.EndOfFile);
+    let node = new SourceDocumentNode();
+    node.statements = this._parseElementList(node, ParseContext.SourceElements);
+    node.endOfFile = this._consume(TokenKind.EndOfFile);
 
     this._advance();
-    return sourceDocumentNode;
+    return node;
   }
 
   /**
@@ -159,18 +169,33 @@ class Parser {
   }
 
   _parseClassDeclaration(parent) {
-    let classDeclarationNode = new ClassDeclarationNode();
-    classDeclarationNode.parent = parent;
+    let node = new ClassDeclarationNode();
+    node.parent = parent;
 
-    classDeclarationNode.classKeyword = this._consume(TokenKind.ClassKeyword);
-    classDeclarationNode.abstractKeyword = this._consumeOptional(
-      TokenKind.AbstractKeyword
-    );
+    node.classKeyword = this._consume(TokenKind.ClassKeyword);
+    node.abstractKeyword = this._consumeOptional(TokenKind.AbstractKeyword);
     // TODO: Allow reserved keywords etc. to be class names as well.
     // TODO: Emit diagnostic if this is not TokenKind.Name but a reserved word etc.
-    classDeclarationNode.name = this._consume(TokenKind.Name);
+    node.name = this._consume(TokenKind.Name);
 
-    return classDeclarationNode;
+    node.baseClause = this._parseClassBaseClause(node);
+    // TODO: Parse class members.
+
+    return node;
+  }
+
+  _parseClassBaseClause(parent) {
+    const colon = this._consumeOptional(TokenKind.ColonOperator);
+    if (!colon) {
+      return;
+    }
+
+    let node = new ClassBaseClauseNode();
+    node.parent = parent;
+    node.colon = colon;
+    node.name = this._consume(TokenKind.Name);
+
+    return node;
   }
 }
 

@@ -126,6 +126,61 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
 
+      it("Should handle class declaration with base class", function () {
+        const document = `class Foo: BaseFoo`;
+
+        /** @type {SourceDocumentNode} */
+        const expected = {
+          kind: NodeKind.SourceDocumentNode,
+          error: null,
+          statements: [
+            {
+              kind: NodeKind.ClassDeclarationNode,
+              error: null,
+              classKeyword: {
+                start: 0,
+                length: 5,
+                kind: TokenKind.ClassKeyword,
+                error: null
+              },
+              abstractKeyword: null,
+              name: {
+                start: 6,
+                length: 3,
+                kind: TokenKind.Name,
+                error: null
+              },
+              baseClause: {
+                kind: NodeKind.ClassBaseClauseNode,
+                error: null,
+                colon: {
+                  start: 9,
+                  length: 1,
+                  kind: TokenKind.ColonOperator,
+                  error: null
+                },
+                name: {
+                  start: 11,
+                  length: 7,
+                  kind: TokenKind.Name,
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 18,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
       it("Should handle abstract class declaration", function () {
         const document = `class abstract Foo`;
 
@@ -159,6 +214,66 @@ describe("Parser", function () {
           ],
           endOfFile: {
             start: 18,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle abstract class declaration with base class", function () {
+        const document = `class abstract Foo: BaseFoo`;
+
+        /** @type {SourceDocumentNode} */
+        const expected = {
+          kind: NodeKind.SourceDocumentNode,
+          error: null,
+          statements: [
+            {
+              kind: NodeKind.ClassDeclarationNode,
+              error: null,
+              classKeyword: {
+                start: 0,
+                length: 5,
+                kind: TokenKind.ClassKeyword,
+                error: null
+              },
+              abstractKeyword: {
+                start: 6,
+                length: 8,
+                kind: TokenKind.AbstractKeyword,
+                error: null
+              },
+              name: {
+                start: 15,
+                length: 3,
+                kind: TokenKind.Name,
+                error: null
+              },
+              baseClause: {
+                kind: NodeKind.ClassBaseClauseNode,
+                error: null,
+                colon: {
+                  start: 18,
+                  length: 1,
+                  kind: TokenKind.ColonOperator,
+                  error: null
+                },
+                name: {
+                  start: 20,
+                  length: 7,
+                  kind: TokenKind.Name,
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 27,
             length: 0,
             kind: TokenKind.EndOfFile,
             error: null
