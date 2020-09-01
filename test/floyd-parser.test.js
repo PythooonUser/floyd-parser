@@ -88,7 +88,7 @@ describe("Parser", function () {
   describe("Statements", function () {
     describe("Class Declaration", function () {
       it("Should handle class declaration", function () {
-        const document = `class Foo`;
+        const document = `class Foo {}`;
 
         /** @type {SourceDocumentNode} */
         const expected = {
@@ -110,11 +110,84 @@ describe("Parser", function () {
                 length: 3,
                 kind: TokenKind.Name,
                 error: null
+              },
+              members: {
+                kind: NodeKind.ClassMembersNode,
+                error: null,
+                leftBrace: {
+                  start: 10,
+                  length: 1,
+                  kind: TokenKind.LeftBrace,
+                  error: null
+                },
+                members: [],
+                rightBrace: {
+                  start: 11,
+                  length: 1,
+                  kind: TokenKind.RightBrace,
+                  error: null
+                }
               }
             }
           ],
           endOfFile: {
-            start: 9,
+            start: 12,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle incomplete class declaration", function () {
+        const document = `class Foo {`;
+
+        /** @type {SourceDocumentNode} */
+        const expected = {
+          kind: NodeKind.SourceDocumentNode,
+          error: null,
+          statements: [
+            {
+              kind: NodeKind.ClassDeclarationNode,
+              error: null,
+              classKeyword: {
+                start: 0,
+                length: 5,
+                kind: TokenKind.ClassKeyword,
+                error: null
+              },
+              abstractKeyword: null,
+              name: {
+                start: 6,
+                length: 3,
+                kind: TokenKind.Name,
+                error: null
+              },
+              members: {
+                kind: NodeKind.ClassMembersNode,
+                error: null,
+                leftBrace: {
+                  start: 10,
+                  length: 1,
+                  kind: TokenKind.LeftBrace,
+                  error: null
+                },
+                members: [],
+                rightBrace: {
+                  start: 11,
+                  length: 0,
+                  kind: TokenKind.RightBrace,
+                  error: TokenError.MissingToken
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 11,
             length: 0,
             kind: TokenKind.EndOfFile,
             error: null
@@ -127,7 +200,7 @@ describe("Parser", function () {
       });
 
       it("Should handle class declaration with base class", function () {
-        const document = `class Foo: BaseFoo`;
+        const document = `class Foo: BaseFoo {}`;
 
         /** @type {SourceDocumentNode} */
         const expected = {
@@ -165,11 +238,28 @@ describe("Parser", function () {
                   kind: TokenKind.Name,
                   error: null
                 }
+              },
+              members: {
+                kind: NodeKind.ClassMembersNode,
+                error: null,
+                leftBrace: {
+                  start: 19,
+                  length: 1,
+                  kind: TokenKind.LeftBrace,
+                  error: null
+                },
+                members: [],
+                rightBrace: {
+                  start: 20,
+                  length: 1,
+                  kind: TokenKind.RightBrace,
+                  error: null
+                }
               }
             }
           ],
           endOfFile: {
-            start: 18,
+            start: 21,
             length: 0,
             kind: TokenKind.EndOfFile,
             error: null
@@ -182,7 +272,7 @@ describe("Parser", function () {
       });
 
       it("Should handle abstract class declaration", function () {
-        const document = `class abstract Foo`;
+        const document = `class abstract Foo {}`;
 
         /** @type {SourceDocumentNode} */
         const expected = {
@@ -209,11 +299,28 @@ describe("Parser", function () {
                 length: 3,
                 kind: TokenKind.Name,
                 error: null
+              },
+              members: {
+                kind: NodeKind.ClassMembersNode,
+                error: null,
+                leftBrace: {
+                  start: 19,
+                  length: 1,
+                  kind: TokenKind.LeftBrace,
+                  error: null
+                },
+                members: [],
+                rightBrace: {
+                  start: 20,
+                  length: 1,
+                  kind: TokenKind.RightBrace,
+                  error: null
+                }
               }
             }
           ],
           endOfFile: {
-            start: 18,
+            start: 21,
             length: 0,
             kind: TokenKind.EndOfFile,
             error: null
@@ -226,7 +333,7 @@ describe("Parser", function () {
       });
 
       it("Should handle abstract class declaration with base class", function () {
-        const document = `class abstract Foo: BaseFoo`;
+        const document = `class abstract Foo: BaseFoo {}`;
 
         /** @type {SourceDocumentNode} */
         const expected = {
@@ -269,11 +376,28 @@ describe("Parser", function () {
                   kind: TokenKind.Name,
                   error: null
                 }
+              },
+              members: {
+                kind: NodeKind.ClassMembersNode,
+                error: null,
+                leftBrace: {
+                  start: 28,
+                  length: 1,
+                  kind: TokenKind.LeftBrace,
+                  error: null
+                },
+                members: [],
+                rightBrace: {
+                  start: 29,
+                  length: 1,
+                  kind: TokenKind.RightBrace,
+                  error: null
+                }
               }
             }
           ],
           endOfFile: {
-            start: 27,
+            start: 30,
             length: 0,
             kind: TokenKind.EndOfFile,
             error: null

@@ -7,6 +7,7 @@ const { ParseContext } = require("./parse-context");
 const { ParseContextError } = require("./parse-context-error");
 const { ClassDeclarationNode } = require("./class-declaration-node");
 const { ClassBaseClauseNode } = require("./class-base-clause-node");
+const { ClassMembersNode } = require("./class-members-node");
 
 /** Generates an abstract syntax tree from a source document. */
 class Parser {
@@ -100,6 +101,8 @@ class Parser {
         continue;
       }
 
+      // TODO: Check if token is valid in enclosing contexts. If so, break out of the loop and continue parsing in the enclosing context.
+
       let skippedToken = this.token;
       skippedToken.error = TokenError.SkippedToken;
       elementList.push(skippedToken);
@@ -177,9 +180,8 @@ class Parser {
     // TODO: Allow reserved keywords etc. to be class names as well.
     // TODO: Emit diagnostic if this is not TokenKind.Name but a reserved word etc.
     node.name = this._consume(TokenKind.Name);
-
     node.baseClause = this._parseClassBaseClause(node);
-    // TODO: Parse class members.
+    node.members = this._parseClassMembers(node);
 
     return node;
   }
@@ -192,8 +194,19 @@ class Parser {
 
     let node = new ClassBaseClauseNode();
     node.parent = parent;
+
     node.colon = colon;
     node.name = this._consume(TokenKind.Name);
+
+    return node;
+  }
+
+  _parseClassMembers(parent) {
+    let node = new ClassMembersNode();
+    node.parent = parent;
+
+    node.leftBrace = this._consume(TokenKind.LeftBrace);
+    node.rightBrace = this._consume(TokenKind.RightBrace);
 
     return node;
   }

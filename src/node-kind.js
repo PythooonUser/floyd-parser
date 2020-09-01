@@ -4,11 +4,13 @@ class NodeKind {}
 NodeKind.SourceDocumentNode = 0;
 NodeKind.ClassDeclarationNode = 1;
 NodeKind.ClassBaseClauseNode = 2;
+NodeKind.ClassMembersNode = 3;
 
 NodeKind.NodeKindMap = {
   [NodeKind.SourceDocumentNode]: "NodeKind.SourceDocumentNode",
   [NodeKind.ClassDeclarationNode]: "NodeKind.ClassDeclarationNode",
-  [NodeKind.ClassBaseClauseNode]: "NodeKind.ClassBaseClauseNode"
+  [NodeKind.ClassBaseClauseNode]: "NodeKind.ClassBaseClauseNode",
+  [NodeKind.ClassMembersNode]: "NodeKind.ClassMembersNode"
 };
 
 exports.NodeKind = NodeKind;
