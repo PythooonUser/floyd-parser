@@ -36,26 +36,26 @@ class Lexer {
     let character = this._next();
 
     if (character === null) {
-      return this.handleEndOfFile();
+      return this._handleEndOfFile();
     }
 
     if (" \t\r\n".includes(character)) {
-      this.parseWhitespaceTrivia();
+      this._parseWhitespaceTrivia();
       return this.advance();
     }
 
     if (character === "/" && this._look() === "/") {
-      this.parseSingleLineCommentTrivia();
+      this._parseSingleLineCommentTrivia();
       return this.advance();
     }
 
     if (character === "/" && this._look() === "*") {
-      this.parseMultiLineCommentTrivia();
+      this._parseMultiLineCommentTrivia();
       return this.advance();
     }
 
     if (character === "#") {
-      this.parseDirectiveTrivia();
+      this._parseDirectiveTrivia();
       return this.advance();
     }
 
@@ -64,23 +64,23 @@ class Lexer {
         character
       )
     ) {
-      return this.parseName();
+      return this._parseName();
     }
 
     if ("0123456789".includes(character)) {
-      return this.parseNumberLiteral();
+      return this._parseNumberLiteral();
     }
 
     if (character === '"') {
-      return this.parseStringLiteral();
+      return this._parseStringLiteral();
     }
 
     if ("<>+-&|^!=~%/*:?.".includes(character)) {
-      return this.parseOperator();
+      return this._parseOperator();
     }
 
     if ("(){}[],;".includes(character)) {
-      return this.parseDelimiter();
+      return this._parseDelimiter();
     }
 
     return this._makeToken(
@@ -96,7 +96,7 @@ class Lexer {
    *
    * @return {Token|null} The end of file Token object or null.
    */
-  handleEndOfFile() {
+  _handleEndOfFile() {
     if (this.index === this.length) {
       return this._makeToken(this.index, 0, TokenKind.EndOfFile);
     }
@@ -109,7 +109,7 @@ class Lexer {
   /**
    * Parses whitespace trivia.
    */
-  parseWhitespaceTrivia() {
+  _parseWhitespaceTrivia() {
     const start = this.index;
 
     while (" \t\r\n".includes(this._look())) {
@@ -123,7 +123,7 @@ class Lexer {
   /**
    * Parses single line comment trivia.
    */
-  parseSingleLineCommentTrivia() {
+  _parseSingleLineCommentTrivia() {
     const start = this.index;
     this._next(); // Consume "/".
 
@@ -138,7 +138,7 @@ class Lexer {
   /**
    * Parses multi line comment trivia.
    */
-  parseMultiLineCommentTrivia() {
+  _parseMultiLineCommentTrivia() {
     const start = this.index;
     let error = null;
     this._next(); // Consume "*".
@@ -168,7 +168,7 @@ class Lexer {
   /**
    * Parses directive trivia.
    */
-  parseDirectiveTrivia() {
+  _parseDirectiveTrivia() {
     const start = this.index;
 
     while (this._look() && this._look() !== "\n") {
@@ -194,7 +194,7 @@ class Lexer {
    *
    * @return {Token|null} The name Token object or null.
    */
-  parseName() {
+  _parseName() {
     const start = this.index;
 
     while (
@@ -217,7 +217,7 @@ class Lexer {
    *
    * @return {Token|null} The number literal Token object or null.
    */
-  parseNumberLiteral() {
+  _parseNumberLiteral() {
     const start = this.index;
 
     while ("0123456789".includes(this._look())) {
@@ -233,7 +233,7 @@ class Lexer {
    *
    * @return {Token|null} The string literal Token object or null.
    */
-  parseStringLiteral() {
+  _parseStringLiteral() {
     const start = this.index;
     let error = null;
 
@@ -263,7 +263,7 @@ class Lexer {
    *
    * @return {Token|null} The operator Token object or null.
    */
-  parseOperator() {
+  _parseOperator() {
     const start = this.index;
 
     const firstCharacter = this.document[this.index];
@@ -288,7 +288,7 @@ class Lexer {
    *
    * @return {Token|null} The delimiter Token object or null.
    */
-  parseDelimiter() {
+  _parseDelimiter() {
     const start = this.index;
 
     const character = this.document[this.index];
