@@ -85,13 +85,13 @@ TokenKind.SingleQuote = 308;
 TokenKind.DoubleQuote = 309;
 
 // Directives
-TokenKind.UnknownDirectiveKeyword = 400;
+TokenKind.UnknownDirective = 400;
 
-TokenKind.IncludeDirectiveKeyword = 401;
-TokenKind.DefineDirectiveKeyword = 402;
-TokenKind.IfDirectiveKeyword = 403;
-TokenKind.IfNotDirectiveKeyword = 404;
-TokenKind.EndIfDirectiveKeyword = 405;
+TokenKind.IncludeDirective = 401;
+TokenKind.DefineDirective = 402;
+TokenKind.IfDirective = 403;
+TokenKind.IfNotDirective = 404;
+TokenKind.EndIfDirective = 405;
 
 /** Provides a mapping from characters to keyword TokenKind objects. */
 TokenKind.KeywordTokenMap = {
@@ -167,11 +167,11 @@ TokenKind.DelimiterTokenMap = {
 
 /** Provides a mapping from characters to directive TokenKind objects. */
 TokenKind.DirectiveTokenMap = {
-  "#include": TokenKind.IncludeDirectiveKeyword,
-  "#define": TokenKind.DefineDirectiveKeyword,
-  "#ifdef": TokenKind.IfDirectiveKeyword,
-  "#ifndef": TokenKind.IfNotDirectiveKeyword,
-  "#endif": TokenKind.EndIfDirectiveKeyword
+  "#include": TokenKind.IncludeDirective,
+  "#define": TokenKind.DefineDirective,
+  "#ifdef": TokenKind.IfDirective,
+  "#ifndef": TokenKind.IfNotDirective,
+  "#endif": TokenKind.EndIfDirective
 };
 
 TokenKind.TokenKindMap = {
@@ -248,12 +248,12 @@ TokenKind.TokenKindMap = {
   [TokenKind.Semicolon]: "TokenKind.Semicolon",
   [TokenKind.SingleQuote]: "TokenKind.SingleQuote",
   [TokenKind.DoubleQuote]: "TokenKind.DoubleQuote",
-  [TokenKind.UnknownDirectiveKeyword]: "TokenKind.UnknownDirectiveKeyword",
-  [TokenKind.IncludeDirectiveKeyword]: "TokenKind.IncludeDirectiveKeyword",
-  [TokenKind.DefineDirectiveKeyword]: "TokenKind.DefineDirectiveKeyword",
-  [TokenKind.IfDirectiveKeyword]: "TokenKind.IfDirectiveKeyword",
-  [TokenKind.IfNotDirectiveKeyword]: "TokenKind.IfNotDirectiveKeyword",
-  [TokenKind.EndIfDirectiveKeyword]: "TokenKind.EndIfDirectiveKeyword"
+  [TokenKind.UnknownDirective]: "TokenKind.UnknownDirective",
+  [TokenKind.IncludeDirective]: "TokenKind.IncludeDirective",
+  [TokenKind.DefineDirective]: "TokenKind.DefineDirective",
+  [TokenKind.IfDirective]: "TokenKind.IfDirective",
+  [TokenKind.IfNotDirective]: "TokenKind.IfNotDirective",
+  [TokenKind.EndIfDirective]: "TokenKind.EndIfDirective"
 };
 
 exports.TokenKind = TokenKind;

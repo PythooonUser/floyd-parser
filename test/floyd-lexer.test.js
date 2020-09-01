@@ -314,6 +314,117 @@ describe("Lexer", function () {
 
       assertTokenArraysEqual(actual, expected);
     });
+
+    it("Should handle directive trivia", function () {
+      const document = `#define A_EXAMINE 101\n#define A_EXAMINE\n#ifdef A_EXAMINE\n#ifndef A_EXAMINE\n#endif\n#foo\n#`;
+
+      /** @type {Token[]} */
+      const expected = [
+        {
+          start: 88,
+          length: 0,
+          kind: TokenKind.EndOfFile,
+          trivia: [
+            {
+              start: 0,
+              length: 21,
+              kind: TokenKind.DefineDirective,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 21,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 22,
+              length: 17,
+              kind: TokenKind.DefineDirective,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 39,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 40,
+              length: 16,
+              kind: TokenKind.IfDirective,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 56,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 57,
+              length: 17,
+              kind: TokenKind.IfNotDirective,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 74,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 75,
+              length: 6,
+              kind: TokenKind.EndIfDirective,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 81,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 82,
+              length: 4,
+              kind: TokenKind.UnknownDirective,
+              trivia: [],
+              error: TokenError.UnkownDirective
+            },
+            {
+              start: 86,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            },
+            {
+              start: 87,
+              length: 1,
+              kind: TokenKind.UnknownDirective,
+              trivia: [],
+              error: TokenError.UnkownDirective
+            }
+          ],
+          error: null
+        }
+      ];
+
+      const actual = getTokens(document);
+
+      assertTokenArraysEqual(actual, expected);
+    });
   });
 
   describe("Names", function () {

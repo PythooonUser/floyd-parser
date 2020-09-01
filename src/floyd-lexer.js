@@ -54,6 +54,11 @@ class Lexer {
       return this.advance();
     }
 
+    if (character === "#") {
+      this.parseDirectiveTrivia();
+      return this.advance();
+    }
+
     if (
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_".includes(
         character
@@ -158,6 +163,30 @@ class Lexer {
 
     const length = this.index + 1 - start;
     this._makeTriviaToken(start, length, TokenKind.MultiLineComment, error);
+  }
+
+  /**
+   * Parses directive trivia.
+   */
+  parseDirectiveTrivia() {
+    const start = this.index;
+
+    while (this._look() && this._look() !== "\n") {
+      this._next();
+    }
+
+    const directiveKeyword = this.document
+      .slice(start, this.index + 1)
+      .split(/\s/)[0];
+    const kind = TokenKind.DirectiveTokenMap[directiveKeyword];
+
+    const length = this.index + 1 - start;
+    this._makeTriviaToken(
+      start,
+      length,
+      kind ? kind : TokenKind.UnknownDirective,
+      kind ? null : TokenError.UnkownDirective
+    );
   }
 
   /**
