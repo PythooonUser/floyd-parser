@@ -3,13 +3,13 @@ const { TokenKind } = require("../src/token-kind");
 const { TokenError } = require("../src/token-error");
 
 const arguments = process.argv;
-let document = '"Hello World!';
+let document = "";
 
-// if (arguments.length < 3) {
-//   console.log("USAGE: node lexer-utils.js <floyd-code>\n");
-// } else {
-//   document = arguments[2];
-// }
+if (arguments.length < 3) {
+  console.log("USAGE: node lexer-utils.js <floyd-code>\n");
+} else {
+  document = arguments[2];
+}
 
 const lexer = new Lexer();
 lexer.reset(document);
