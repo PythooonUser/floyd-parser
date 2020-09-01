@@ -3,15 +3,13 @@ class TokenKind {}
 
 TokenKind.EndOfFile = 0;
 TokenKind.UnknownToken = 1;
-TokenKind.MissingToken = 2;
-TokenKind.SkippedToken = 3;
 
-TokenKind.Whitespace = 4;
-TokenKind.SingleLineComment = 5;
-TokenKind.MultiLineComment = 6;
+TokenKind.Whitespace = 2;
+TokenKind.SingleLineComment = 3;
+TokenKind.MultiLineComment = 4;
 
-TokenKind.StringLiteral = 7;
-TokenKind.NumberLiteral = 8;
+TokenKind.StringLiteral = 5;
+TokenKind.NumberLiteral = 6;
 
 // Keywords
 TokenKind.Name = 100;
@@ -179,8 +177,6 @@ TokenKind.DirectiveTokenMap = {
 TokenKind.TokenKindMap = {
   [TokenKind.EndOfFile]: "TokenKind.EndOfFile",
   [TokenKind.UnknownToken]: "TokenKind.UnknownToken",
-  [TokenKind.MissingToken]: "TokenKind.MissingToken",
-  [TokenKind.SkippedToken]: "TokenKind.SkippedToken",
   [TokenKind.Whitespace]: "TokenKind.Whitespace",
   [TokenKind.SingleLineComment]: "TokenKind.SingleLineComment",
   [TokenKind.MultiLineComment]: "TokenKind.MultiLineComment",

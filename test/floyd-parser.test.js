@@ -3,6 +3,7 @@ const { TokenKind } = require("../src/token-kind");
 const { NodeKind } = require("../src/node-kind");
 const { Parser } = require("../src/floyd-parser");
 const { SourceDocumentNode } = require("../src/source-document-node");
+const { TokenError } = require("../src/token-error");
 
 describe("Parser", function () {
   /** @type {Parser} */
@@ -51,6 +52,123 @@ describe("Parser", function () {
       const actual = parseSourceDocument(document);
 
       assertNodesEqual(actual, expected);
+    });
+  });
+
+  describe("Unkown Token", function () {
+    it("Should handle unknown token as skipped token", function () {
+      const document = `§`;
+
+      /** @type {SourceDocumentNode} */
+      const expected = {
+        kind: NodeKind.SourceDocumentNode,
+        error: null,
+        statements: [
+          {
+            start: 0,
+            length: 1,
+            kind: TokenKind.UnknownToken,
+            error: TokenError.SkippedToken
+          }
+        ],
+        endOfFile: {
+          start: 1,
+          length: 0,
+          kind: TokenKind.EndOfFile,
+          error: null
+        }
+      };
+
+      const actual = parseSourceDocument(document);
+
+      assertNodesEqual(actual, expected);
+    });
+  });
+
+  describe("Statements", function () {
+    describe("Class Declaration", function () {
+      it("Should handle class declaration", function () {
+        const document = `class Foo`;
+
+        /** @type {SourceDocumentNode} */
+        const expected = {
+          kind: NodeKind.SourceDocumentNode,
+          error: null,
+          statements: [
+            {
+              kind: NodeKind.ClassDeclarationNode,
+              error: null,
+              classKeyword: {
+                start: 0,
+                length: 5,
+                kind: TokenKind.ClassKeyword,
+                error: null
+              },
+              abstractKeyword: null,
+              name: {
+                start: 6,
+                length: 3,
+                kind: TokenKind.Name,
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 9,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle abstract class declaration", function () {
+        const document = `class abstract Foo`;
+
+        /** @type {SourceDocumentNode} */
+        const expected = {
+          kind: NodeKind.SourceDocumentNode,
+          error: null,
+          statements: [
+            {
+              kind: NodeKind.ClassDeclarationNode,
+              error: null,
+              classKeyword: {
+                start: 0,
+                length: 5,
+                kind: TokenKind.ClassKeyword,
+                error: null
+              },
+              abstractKeyword: {
+                start: 6,
+                length: 8,
+                kind: TokenKind.AbstractKeyword,
+                error: null
+              },
+              name: {
+                start: 15,
+                length: 3,
+                kind: TokenKind.Name,
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 18,
+            length: 0,
+            kind: TokenKind.EndOfFile,
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
     });
   });
 });

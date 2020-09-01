@@ -8,7 +8,7 @@ class SourceDocumentNode extends Node {
 
     this.kind = NodeKind.SourceDocumentNode;
 
-    /** @type {Node[]} */
+    /** @type {(Node|Token)[]} */
     this.statements = [];
     /** @type {Token} */
     this.endOfFile = null;
