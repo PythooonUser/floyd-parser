@@ -1,5 +1,6 @@
 class ParseContext {}
 
-ParseContext.SourceElements = 0;
+ParseContext.SourceElements = "ParseContext.SourceElements";
+ParseContext.ClassMembers = "ParseContext.ClassMembers";
 
 exports.ParseContext = ParseContext;

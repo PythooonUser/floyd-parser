@@ -971,14 +971,14 @@ describe("Lexer", function () {
         {
           start: 0,
           length: 2,
-          kind: TokenKind.BinaryLeftShiftOperator,
+          kind: TokenKind.LessThanLessThanOperator,
           trivia: [],
           error: null
         },
         {
           start: 3,
           length: 2,
-          kind: TokenKind.BinaryRightShiftOperator,
+          kind: TokenKind.GreaterThanGreaterThanOperator,
           trivia: [
             {
               start: 2,
@@ -993,7 +993,7 @@ describe("Lexer", function () {
         {
           start: 6,
           length: 2,
-          kind: TokenKind.IncrementOperator,
+          kind: TokenKind.PlusPlusOperator,
           trivia: [
             {
               start: 5,
@@ -1008,7 +1008,7 @@ describe("Lexer", function () {
         {
           start: 9,
           length: 2,
-          kind: TokenKind.DecrementOperator,
+          kind: TokenKind.MinusMinusOperator,
           trivia: [
             {
               start: 8,
@@ -1023,7 +1023,7 @@ describe("Lexer", function () {
         {
           start: 12,
           length: 2,
-          kind: TokenKind.AndOperator,
+          kind: TokenKind.AmpersandAmpersandOperator,
           trivia: [
             {
               start: 11,
@@ -1038,7 +1038,7 @@ describe("Lexer", function () {
         {
           start: 15,
           length: 1,
-          kind: TokenKind.BinaryAndOperator,
+          kind: TokenKind.AmpersandOperator,
           trivia: [
             {
               start: 14,
@@ -1053,7 +1053,7 @@ describe("Lexer", function () {
         {
           start: 17,
           length: 2,
-          kind: TokenKind.OrOperator,
+          kind: TokenKind.BarBarOperator,
           trivia: [
             {
               start: 16,
@@ -1068,7 +1068,7 @@ describe("Lexer", function () {
         {
           start: 20,
           length: 1,
-          kind: TokenKind.BinaryOrOperator,
+          kind: TokenKind.BarOperator,
           trivia: [
             {
               start: 19,
@@ -1083,7 +1083,7 @@ describe("Lexer", function () {
         {
           start: 22,
           length: 1,
-          kind: TokenKind.BinaryXorOperator,
+          kind: TokenKind.CaretOperator,
           trivia: [
             {
               start: 21,
@@ -1098,7 +1098,7 @@ describe("Lexer", function () {
         {
           start: 24,
           length: 2,
-          kind: TokenKind.LessThanOrEqualOperator,
+          kind: TokenKind.LessThanEqualsOperator,
           trivia: [
             {
               start: 23,
@@ -1113,7 +1113,7 @@ describe("Lexer", function () {
         {
           start: 27,
           length: 2,
-          kind: TokenKind.GreaterThanOrEqualOperator,
+          kind: TokenKind.GreaterThanEqualsOperator,
           trivia: [
             {
               start: 26,
@@ -1158,7 +1158,7 @@ describe("Lexer", function () {
         {
           start: 34,
           length: 2,
-          kind: TokenKind.NotEqualOperator,
+          kind: TokenKind.ExclamationEqualsOperator,
           trivia: [
             {
               start: 33,
@@ -1173,7 +1173,7 @@ describe("Lexer", function () {
         {
           start: 37,
           length: 2,
-          kind: TokenKind.EqualOperator,
+          kind: TokenKind.EqualsEqualsOperator,
           trivia: [
             {
               start: 36,
@@ -1188,7 +1188,7 @@ describe("Lexer", function () {
         {
           start: 40,
           length: 1,
-          kind: TokenKind.NotOperator,
+          kind: TokenKind.ExclamationOperator,
           trivia: [
             {
               start: 39,
@@ -1203,7 +1203,7 @@ describe("Lexer", function () {
         {
           start: 42,
           length: 1,
-          kind: TokenKind.BinaryNotOperator,
+          kind: TokenKind.TildeOperator,
           trivia: [
             {
               start: 41,
@@ -1218,7 +1218,7 @@ describe("Lexer", function () {
         {
           start: 44,
           length: 2,
-          kind: TokenKind.ModuloAssignmentOperator,
+          kind: TokenKind.PercentEqualsOperator,
           trivia: [
             {
               start: 43,
@@ -1233,7 +1233,7 @@ describe("Lexer", function () {
         {
           start: 47,
           length: 2,
-          kind: TokenKind.DivisionAssignmentOperator,
+          kind: TokenKind.SlashEqualsOperator,
           trivia: [
             {
               start: 46,
@@ -1248,7 +1248,7 @@ describe("Lexer", function () {
         {
           start: 50,
           length: 2,
-          kind: TokenKind.MultiplicationAssignmentOperator,
+          kind: TokenKind.StarEqualsOperator,
           trivia: [
             {
               start: 49,
@@ -1263,7 +1263,7 @@ describe("Lexer", function () {
         {
           start: 53,
           length: 2,
-          kind: TokenKind.AdditionAssignmentOperator,
+          kind: TokenKind.PlusEqualsOperator,
           trivia: [
             {
               start: 52,
@@ -1278,7 +1278,7 @@ describe("Lexer", function () {
         {
           start: 56,
           length: 2,
-          kind: TokenKind.SubtractionAssignmentOperator,
+          kind: TokenKind.MinusEqualsOperator,
           trivia: [
             {
               start: 55,
@@ -1293,7 +1293,7 @@ describe("Lexer", function () {
         {
           start: 59,
           length: 1,
-          kind: TokenKind.AdditionOperator,
+          kind: TokenKind.PlusOperator,
           trivia: [
             {
               start: 58,
@@ -1308,7 +1308,7 @@ describe("Lexer", function () {
         {
           start: 61,
           length: 1,
-          kind: TokenKind.SubtractionOperator,
+          kind: TokenKind.MinusOperator,
           trivia: [
             {
               start: 60,
@@ -1323,7 +1323,7 @@ describe("Lexer", function () {
         {
           start: 63,
           length: 1,
-          kind: TokenKind.ModuloOperator,
+          kind: TokenKind.PercentOperator,
           trivia: [
             {
               start: 62,
@@ -1338,7 +1338,7 @@ describe("Lexer", function () {
         {
           start: 65,
           length: 1,
-          kind: TokenKind.DivisionOperator,
+          kind: TokenKind.SlashOperator,
           trivia: [
             {
               start: 64,
@@ -1353,7 +1353,7 @@ describe("Lexer", function () {
         {
           start: 67,
           length: 1,
-          kind: TokenKind.MultiplicationOperator,
+          kind: TokenKind.StarOperator,
           trivia: [
             {
               start: 66,
@@ -1368,7 +1368,7 @@ describe("Lexer", function () {
         {
           start: 69,
           length: 1,
-          kind: TokenKind.AssignmentOperator,
+          kind: TokenKind.EqualsOperator,
           trivia: [
             {
               start: 68,
@@ -1398,7 +1398,7 @@ describe("Lexer", function () {
         {
           start: 73,
           length: 1,
-          kind: TokenKind.QuestionMarkOperator,
+          kind: TokenKind.QuestionOperator,
           trivia: [
             {
               start: 72,
@@ -1449,14 +1449,14 @@ describe("Lexer", function () {
         {
           start: 0,
           length: 1,
-          kind: TokenKind.LeftParen,
+          kind: TokenKind.LeftParenDelimiter,
           trivia: [],
           error: null
         },
         {
           start: 2,
           length: 1,
-          kind: TokenKind.RightParen,
+          kind: TokenKind.RightParenDelimiter,
           trivia: [
             {
               start: 1,
@@ -1471,7 +1471,7 @@ describe("Lexer", function () {
         {
           start: 4,
           length: 1,
-          kind: TokenKind.LeftBrace,
+          kind: TokenKind.LeftBraceDelimiter,
           trivia: [
             {
               start: 3,
@@ -1486,7 +1486,7 @@ describe("Lexer", function () {
         {
           start: 6,
           length: 1,
-          kind: TokenKind.RightBrace,
+          kind: TokenKind.RightBraceDelimiter,
           trivia: [
             {
               start: 5,
@@ -1501,7 +1501,7 @@ describe("Lexer", function () {
         {
           start: 8,
           length: 1,
-          kind: TokenKind.LeftBracket,
+          kind: TokenKind.LeftBracketDelimiter,
           trivia: [
             {
               start: 7,
@@ -1516,7 +1516,7 @@ describe("Lexer", function () {
         {
           start: 10,
           length: 1,
-          kind: TokenKind.RightBracket,
+          kind: TokenKind.RightBracketDelimiter,
           trivia: [
             {
               start: 9,
@@ -1531,7 +1531,7 @@ describe("Lexer", function () {
         {
           start: 12,
           length: 1,
-          kind: TokenKind.Comma,
+          kind: TokenKind.CommaDelimiter,
           trivia: [
             {
               start: 11,
@@ -1546,7 +1546,7 @@ describe("Lexer", function () {
         {
           start: 14,
           length: 1,
-          kind: TokenKind.Semicolon,
+          kind: TokenKind.SemicolonDelimiter,
           trivia: [
             {
               start: 13,

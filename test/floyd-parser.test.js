@@ -1,9 +1,6 @@
 const assert = require("assert");
-const { TokenKind } = require("../src/token-kind");
-const { NodeKind } = require("../src/node-kind");
 const { Parser } = require("../src/floyd-parser");
-const { SourceDocumentNode } = require("../src/source-document-node");
-const { TokenError } = require("../src/token-error");
+const { SourceDocumentNode } = require("../src/nodes/source-document-node");
 
 describe("Parser", function () {
   /** @type {Parser} */
@@ -24,11 +21,18 @@ describe("Parser", function () {
    * @param {SourceDocumentNode} expected The expected Node object.
    */
   const assertNodesEqual = (actual, expected) => {
-    // TODO: Make this generic for any kind of Node or Token!
-    assert.strictEqual(
-      actual.kind,
-      expected.kind,
-      "Node kinds should be equal."
+    assert.deepStrictEqual(
+      JSON.parse(
+        JSON.stringify(actual, function (key, value) {
+          if (key === "parent" || key === "trivia") {
+            return;
+          }
+
+          return value;
+        })
+      ),
+      expected,
+      "Abstract Syntax Trees should be equal"
     );
   };
 
@@ -36,15 +40,14 @@ describe("Parser", function () {
     it("Should handle end of file", function () {
       const document = ``;
 
-      /** @type {SourceDocumentNode} */
       const expected = {
-        kind: NodeKind.SourceDocumentNode,
+        kind: "NodeKind.SourceDocumentNode",
         error: null,
         statements: [],
         endOfFile: {
           start: 0,
           length: 0,
-          kind: TokenKind.EndOfFile,
+          kind: "TokenKind.EndOfFile",
           error: null
         }
       };
@@ -56,25 +59,91 @@ describe("Parser", function () {
   });
 
   describe("Unkown Token", function () {
-    it("Should handle unknown token as skipped token", function () {
+    it("Should handle unknown token as skipped token - 01", function () {
       const document = `§`;
 
-      /** @type {SourceDocumentNode} */
       const expected = {
-        kind: NodeKind.SourceDocumentNode,
+        kind: "NodeKind.SourceDocumentNode",
         error: null,
         statements: [
           {
             start: 0,
             length: 1,
-            kind: TokenKind.UnknownToken,
-            error: TokenError.SkippedToken
+            kind: "TokenKind.UnknownToken",
+            error: "TokenError.SkippedToken"
           }
         ],
         endOfFile: {
           start: 1,
           length: 0,
-          kind: TokenKind.EndOfFile,
+          kind: "TokenKind.EndOfFile",
+          error: null
+        }
+      };
+
+      const actual = parseSourceDocument(document);
+
+      assertNodesEqual(actual, expected);
+    });
+
+    it("Should handle unknown token as skipped token - 02", function () {
+      const document = `a; § b;`;
+
+      const expected = {
+        kind: "NodeKind.SourceDocumentNode",
+        error: null,
+        statements: [
+          {
+            kind: "NodeKind.ExpressionStatementNode",
+            error: null,
+            expression: {
+              kind: "NodeKind.VariableNode",
+              error: null,
+              name: {
+                start: 0,
+                length: 1,
+                kind: "TokenKind.Name",
+                error: null
+              }
+            },
+            semicolon: {
+              start: 1,
+              length: 1,
+              kind: "TokenKind.SemicolonDelimiter",
+              error: null
+            }
+          },
+          {
+            start: 3,
+            length: 1,
+            kind: "TokenKind.UnknownToken",
+            error: "TokenError.SkippedToken"
+          },
+          {
+            kind: "NodeKind.ExpressionStatementNode",
+            error: null,
+            expression: {
+              kind: "NodeKind.VariableNode",
+              error: null,
+              name: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.Name",
+                error: null
+              }
+            },
+            semicolon: {
+              start: 6,
+              length: 1,
+              kind: "TokenKind.SemicolonDelimiter",
+              error: null
+            }
+          }
+        ],
+        endOfFile: {
+          start: 7,
+          length: 0,
+          kind: "TokenKind.EndOfFile",
           error: null
         }
       };
@@ -90,41 +159,40 @@ describe("Parser", function () {
       it("Should handle class declaration", function () {
         const document = `class Foo {}`;
 
-        /** @type {SourceDocumentNode} */
         const expected = {
-          kind: NodeKind.SourceDocumentNode,
+          kind: "NodeKind.SourceDocumentNode",
           error: null,
           statements: [
             {
-              kind: NodeKind.ClassDeclarationNode,
+              kind: "NodeKind.ClassDeclarationNode",
               error: null,
               classKeyword: {
                 start: 0,
                 length: 5,
-                kind: TokenKind.ClassKeyword,
+                kind: "TokenKind.ClassKeyword",
                 error: null
               },
               abstractKeyword: null,
               name: {
                 start: 6,
                 length: 3,
-                kind: TokenKind.Name,
+                kind: "TokenKind.Name",
                 error: null
               },
               members: {
-                kind: NodeKind.ClassMembersNode,
+                kind: "NodeKind.ClassMembersNode",
                 error: null,
                 leftBrace: {
                   start: 10,
                   length: 1,
-                  kind: TokenKind.LeftBrace,
+                  kind: "TokenKind.LeftBraceDelimiter",
                   error: null
                 },
                 members: [],
                 rightBrace: {
                   start: 11,
                   length: 1,
-                  kind: TokenKind.RightBrace,
+                  kind: "TokenKind.RightBraceDelimiter",
                   error: null
                 }
               }
@@ -133,7 +201,7 @@ describe("Parser", function () {
           endOfFile: {
             start: 12,
             length: 0,
-            kind: TokenKind.EndOfFile,
+            kind: "TokenKind.EndOfFile",
             error: null
           }
         };
@@ -143,45 +211,44 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
 
-      it("Should handle incomplete class declaration", function () {
+      it("Should handle incomplete class declaration - 01", function () {
         const document = `class Foo {`;
 
-        /** @type {SourceDocumentNode} */
         const expected = {
-          kind: NodeKind.SourceDocumentNode,
+          kind: "NodeKind.SourceDocumentNode",
           error: null,
           statements: [
             {
-              kind: NodeKind.ClassDeclarationNode,
+              kind: "NodeKind.ClassDeclarationNode",
               error: null,
               classKeyword: {
                 start: 0,
                 length: 5,
-                kind: TokenKind.ClassKeyword,
+                kind: "TokenKind.ClassKeyword",
                 error: null
               },
               abstractKeyword: null,
               name: {
                 start: 6,
                 length: 3,
-                kind: TokenKind.Name,
+                kind: "TokenKind.Name",
                 error: null
               },
               members: {
-                kind: NodeKind.ClassMembersNode,
+                kind: "NodeKind.ClassMembersNode",
                 error: null,
                 leftBrace: {
                   start: 10,
                   length: 1,
-                  kind: TokenKind.LeftBrace,
+                  kind: "TokenKind.LeftBraceDelimiter",
                   error: null
                 },
                 members: [],
                 rightBrace: {
                   start: 11,
                   length: 0,
-                  kind: TokenKind.RightBrace,
-                  error: TokenError.MissingToken
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: "TokenError.MissingToken"
                 }
               }
             }
@@ -189,7 +256,96 @@ describe("Parser", function () {
           endOfFile: {
             start: 11,
             length: 0,
-            kind: TokenKind.EndOfFile,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle incomplete class declaration - 02", function () {
+        const document = `class Foo { class Bar {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ClassDeclarationNode",
+              error: null,
+              classKeyword: {
+                start: 0,
+                length: 5,
+                kind: "TokenKind.ClassKeyword",
+                error: null
+              },
+              abstractKeyword: null,
+              name: {
+                start: 6,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              members: {
+                kind: "NodeKind.ClassMembersNode",
+                error: null,
+                leftBrace: {
+                  start: 10,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                members: [],
+                rightBrace: {
+                  start: 12,
+                  length: 0,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: "TokenError.MissingToken"
+                }
+              }
+            },
+            {
+              kind: "NodeKind.ClassDeclarationNode",
+              error: null,
+              classKeyword: {
+                start: 12,
+                length: 5,
+                kind: "TokenKind.ClassKeyword",
+                error: null
+              },
+              abstractKeyword: null,
+              name: {
+                start: 18,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              members: {
+                kind: "NodeKind.ClassMembersNode",
+                error: null,
+                leftBrace: {
+                  start: 22,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                members: [],
+                rightBrace: {
+                  start: 23,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 24,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
             error: null
           }
         };
@@ -202,57 +358,56 @@ describe("Parser", function () {
       it("Should handle class declaration with base class", function () {
         const document = `class Foo: BaseFoo {}`;
 
-        /** @type {SourceDocumentNode} */
         const expected = {
-          kind: NodeKind.SourceDocumentNode,
+          kind: "NodeKind.SourceDocumentNode",
           error: null,
           statements: [
             {
-              kind: NodeKind.ClassDeclarationNode,
+              kind: "NodeKind.ClassDeclarationNode",
               error: null,
               classKeyword: {
                 start: 0,
                 length: 5,
-                kind: TokenKind.ClassKeyword,
+                kind: "TokenKind.ClassKeyword",
                 error: null
               },
               abstractKeyword: null,
               name: {
                 start: 6,
                 length: 3,
-                kind: TokenKind.Name,
+                kind: "TokenKind.Name",
                 error: null
               },
               baseClause: {
-                kind: NodeKind.ClassBaseClauseNode,
+                kind: "NodeKind.ClassBaseClauseNode",
                 error: null,
                 colon: {
                   start: 9,
                   length: 1,
-                  kind: TokenKind.ColonOperator,
+                  kind: "TokenKind.ColonOperator",
                   error: null
                 },
                 name: {
                   start: 11,
                   length: 7,
-                  kind: TokenKind.Name,
+                  kind: "TokenKind.Name",
                   error: null
                 }
               },
               members: {
-                kind: NodeKind.ClassMembersNode,
+                kind: "NodeKind.ClassMembersNode",
                 error: null,
                 leftBrace: {
                   start: 19,
                   length: 1,
-                  kind: TokenKind.LeftBrace,
+                  kind: "TokenKind.LeftBraceDelimiter",
                   error: null
                 },
                 members: [],
                 rightBrace: {
                   start: 20,
                   length: 1,
-                  kind: TokenKind.RightBrace,
+                  kind: "TokenKind.RightBraceDelimiter",
                   error: null
                 }
               }
@@ -261,7 +416,7 @@ describe("Parser", function () {
           endOfFile: {
             start: 21,
             length: 0,
-            kind: TokenKind.EndOfFile,
+            kind: "TokenKind.EndOfFile",
             error: null
           }
         };
@@ -274,46 +429,45 @@ describe("Parser", function () {
       it("Should handle abstract class declaration", function () {
         const document = `class abstract Foo {}`;
 
-        /** @type {SourceDocumentNode} */
         const expected = {
-          kind: NodeKind.SourceDocumentNode,
+          kind: "NodeKind.SourceDocumentNode",
           error: null,
           statements: [
             {
-              kind: NodeKind.ClassDeclarationNode,
+              kind: "NodeKind.ClassDeclarationNode",
               error: null,
               classKeyword: {
                 start: 0,
                 length: 5,
-                kind: TokenKind.ClassKeyword,
+                kind: "TokenKind.ClassKeyword",
                 error: null
               },
               abstractKeyword: {
                 start: 6,
                 length: 8,
-                kind: TokenKind.AbstractKeyword,
+                kind: "TokenKind.AbstractKeyword",
                 error: null
               },
               name: {
                 start: 15,
                 length: 3,
-                kind: TokenKind.Name,
+                kind: "TokenKind.Name",
                 error: null
               },
               members: {
-                kind: NodeKind.ClassMembersNode,
+                kind: "NodeKind.ClassMembersNode",
                 error: null,
                 leftBrace: {
                   start: 19,
                   length: 1,
-                  kind: TokenKind.LeftBrace,
+                  kind: "TokenKind.LeftBraceDelimiter",
                   error: null
                 },
                 members: [],
                 rightBrace: {
                   start: 20,
                   length: 1,
-                  kind: TokenKind.RightBrace,
+                  kind: "TokenKind.RightBraceDelimiter",
                   error: null
                 }
               }
@@ -322,7 +476,7 @@ describe("Parser", function () {
           endOfFile: {
             start: 21,
             length: 0,
-            kind: TokenKind.EndOfFile,
+            kind: "TokenKind.EndOfFile",
             error: null
           }
         };
@@ -335,62 +489,61 @@ describe("Parser", function () {
       it("Should handle abstract class declaration with base class", function () {
         const document = `class abstract Foo: BaseFoo {}`;
 
-        /** @type {SourceDocumentNode} */
         const expected = {
-          kind: NodeKind.SourceDocumentNode,
+          kind: "NodeKind.SourceDocumentNode",
           error: null,
           statements: [
             {
-              kind: NodeKind.ClassDeclarationNode,
+              kind: "NodeKind.ClassDeclarationNode",
               error: null,
               classKeyword: {
                 start: 0,
                 length: 5,
-                kind: TokenKind.ClassKeyword,
+                kind: "TokenKind.ClassKeyword",
                 error: null
               },
               abstractKeyword: {
                 start: 6,
                 length: 8,
-                kind: TokenKind.AbstractKeyword,
+                kind: "TokenKind.AbstractKeyword",
                 error: null
               },
               name: {
                 start: 15,
                 length: 3,
-                kind: TokenKind.Name,
+                kind: "TokenKind.Name",
                 error: null
               },
               baseClause: {
-                kind: NodeKind.ClassBaseClauseNode,
+                kind: "NodeKind.ClassBaseClauseNode",
                 error: null,
                 colon: {
                   start: 18,
                   length: 1,
-                  kind: TokenKind.ColonOperator,
+                  kind: "TokenKind.ColonOperator",
                   error: null
                 },
                 name: {
                   start: 20,
                   length: 7,
-                  kind: TokenKind.Name,
+                  kind: "TokenKind.Name",
                   error: null
                 }
               },
               members: {
-                kind: NodeKind.ClassMembersNode,
+                kind: "NodeKind.ClassMembersNode",
                 error: null,
                 leftBrace: {
                   start: 28,
                   length: 1,
-                  kind: TokenKind.LeftBrace,
+                  kind: "TokenKind.LeftBraceDelimiter",
                   error: null
                 },
                 members: [],
                 rightBrace: {
                   start: 29,
                   length: 1,
-                  kind: TokenKind.RightBrace,
+                  kind: "TokenKind.RightBraceDelimiter",
                   error: null
                 }
               }
@@ -399,7 +552,7 @@ describe("Parser", function () {
           endOfFile: {
             start: 30,
             length: 0,
-            kind: TokenKind.EndOfFile,
+            kind: "TokenKind.EndOfFile",
             error: null
           }
         };
@@ -409,5 +562,1224 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
     });
+  });
+
+  describe("Expressions", function () {
+    describe("Unary Expressions", function () {
+      it("Should handle increment expression - 01", function () {
+        const document = `++a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PrefixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 2,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 0,
+                  length: 2,
+                  kind: "TokenKind.PlusPlusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 3,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 4,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle increment expression - 02", function () {
+        const document = `++ a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PrefixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 0,
+                  length: 2,
+                  kind: "TokenKind.PlusPlusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 5,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle increment expression - 03", function () {
+        const document = `++a`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PrefixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 2,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 0,
+                  length: 2,
+                  kind: "TokenKind.PlusPlusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 3,
+                length: 0,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: "TokenError.MissingToken"
+              }
+            }
+          ],
+          endOfFile: {
+            start: 3,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle increment expression - 04", function () {
+        const document = `(++a);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.ParenthesizedExpressionNode",
+                error: null,
+                leftParen: {
+                  start: 0,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                expression: {
+                  kind: "NodeKind.PrefixUpdateExpressionNode",
+                  error: null,
+                  operand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 3,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 1,
+                    length: 2,
+                    kind: "TokenKind.PlusPlusOperator",
+                    error: null
+                  }
+                },
+                rightParen: {
+                  start: 4,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle increment expression - 05", function () {
+        const document = `(++a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.ParenthesizedExpressionNode",
+                error: null,
+                leftParen: {
+                  start: 0,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                expression: {
+                  kind: "NodeKind.PrefixUpdateExpressionNode",
+                  error: null,
+                  operand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 3,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 1,
+                    length: 2,
+                    kind: "TokenKind.PlusPlusOperator",
+                    error: null
+                  }
+                },
+                rightParen: {
+                  start: 4,
+                  length: 0,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: "TokenError.MissingToken"
+                }
+              },
+              semicolon: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 5,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle increment expression - 06", function () {
+        const document = `++(a);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PrefixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.ParenthesizedExpressionNode",
+                  error: null,
+                  leftParen: {
+                    start: 2,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 3,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  rightParen: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 0,
+                  length: 2,
+                  kind: "TokenKind.PlusPlusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle decrement expression - 01", function () {
+        const document = `--a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PrefixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 2,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 0,
+                  length: 2,
+                  kind: "TokenKind.MinusMinusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 3,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 4,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle decrement expression - 02", function () {
+        const document = `-- a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PrefixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 0,
+                  length: 2,
+                  kind: "TokenKind.MinusMinusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 5,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle decrement expression - 03", function () {
+        const document = `--a`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PrefixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 2,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 0,
+                  length: 2,
+                  kind: "TokenKind.MinusMinusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 3,
+                length: 0,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: "TokenError.MissingToken"
+              }
+            }
+          ],
+          endOfFile: {
+            start: 3,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle decrement expression - 04", function () {
+        const document = `(--a);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.ParenthesizedExpressionNode",
+                error: null,
+                leftParen: {
+                  start: 0,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                expression: {
+                  kind: "NodeKind.PrefixUpdateExpressionNode",
+                  error: null,
+                  operand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 3,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 1,
+                    length: 2,
+                    kind: "TokenKind.MinusMinusOperator",
+                    error: null
+                  }
+                },
+                rightParen: {
+                  start: 4,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle decrement expression - 05", function () {
+        const document = `(--a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.ParenthesizedExpressionNode",
+                error: null,
+                leftParen: {
+                  start: 0,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                expression: {
+                  kind: "NodeKind.PrefixUpdateExpressionNode",
+                  error: null,
+                  operand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 3,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 1,
+                    length: 2,
+                    kind: "TokenKind.MinusMinusOperator",
+                    error: null
+                  }
+                },
+                rightParen: {
+                  start: 4,
+                  length: 0,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: "TokenError.MissingToken"
+                }
+              },
+              semicolon: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 5,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle decrement expression - 06", function () {
+        const document = `--(a);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PrefixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.ParenthesizedExpressionNode",
+                  error: null,
+                  leftParen: {
+                    start: 2,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 3,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  rightParen: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 0,
+                  length: 2,
+                  kind: "TokenKind.MinusMinusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
+    describe("Binary Expressions", function () {
+      it("Should handle addition", function () {
+        const document = `a + b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 2,
+                  length: 1,
+                  kind: "TokenKind.PlusOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle subtraction", function () {
+        const document = `a - b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 2,
+                  length: 1,
+                  kind: "TokenKind.MinusOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle multiplication", function () {
+        const document = `a * b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 2,
+                  length: 1,
+                  kind: "TokenKind.StarOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle division", function () {
+        const document = `a / b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 2,
+                  length: 1,
+                  kind: "TokenKind.SlashOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle complex arithemtic - 01", function () {
+        const document = `a + b * c;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 2,
+                  length: 1,
+                  kind: "TokenKind.PlusOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.BinaryExpressionNode",
+                  error: null,
+                  leftOperand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 4,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 6,
+                    length: 1,
+                    kind: "TokenKind.StarOperator",
+                    error: null
+                  },
+                  rightOperand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 8,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  }
+                }
+              },
+              semicolon: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 10,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle complex arithemtic - 02", function () {
+        const document = `a + b / c;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 2,
+                  length: 1,
+                  kind: "TokenKind.PlusOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.BinaryExpressionNode",
+                  error: null,
+                  leftOperand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 4,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 6,
+                    length: 1,
+                    kind: "TokenKind.SlashOperator",
+                    error: null
+                  },
+                  rightOperand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 8,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  }
+                }
+              },
+              semicolon: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 10,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle complex arithemtic - 03", function () {
+        const document = `(a + b) * c;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.ParenthesizedExpressionNode",
+                  error: null,
+                  leftParen: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.BinaryExpressionNode",
+                    error: null,
+                    leftOperand: {
+                      kind: "NodeKind.VariableNode",
+                      error: null,
+                      name: {
+                        start: 1,
+                        length: 1,
+                        kind: "TokenKind.Name",
+                        error: null
+                      }
+                    },
+                    operator: {
+                      start: 3,
+                      length: 1,
+                      kind: "TokenKind.PlusOperator",
+                      error: null
+                    },
+                    rightOperand: {
+                      kind: "NodeKind.VariableNode",
+                      error: null,
+                      name: {
+                        start: 5,
+                        length: 1,
+                        kind: "TokenKind.Name",
+                        error: null
+                      }
+                    }
+                  },
+                  rightParen: {
+                    start: 6,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 8,
+                  length: 1,
+                  kind: "TokenKind.StarOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 10,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 11,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 12,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
+    describe.skip("Ternary Expressions", function () {});
   });
 });

@@ -1,6 +1,6 @@
-const { NodeKind } = require("./node-kind");
-const { Node } = require("./node");
-const { Token } = require("./token");
+const { NodeKind } = require("../node-kind");
+const { Node } = require("../node");
+const { Token } = require("../token");
 
 class SourceDocumentNode extends Node {
   constructor() {

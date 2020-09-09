@@ -1,6 +1,4 @@
 const { Lexer } = require("../src/floyd-lexer");
-const { TokenKind } = require("../src/token-kind");
-const { TokenError } = require("../src/token-error");
 
 const arguments = process.argv;
 let document = "";
@@ -22,21 +20,4 @@ while (token) {
   token = lexer.advance();
 }
 
-console.log(
-  JSON.stringify(
-    tokens,
-    (key, value) => {
-      if (key === "kind") {
-        return TokenKind.TokenKindMap[value];
-      }
-
-      if (key === "error") {
-        const error = TokenError.TokenErrorMap[value];
-        return error ? error : null;
-      }
-
-      return value;
-    },
-    2
-  )
-);
+console.log(JSON.stringify(tokens, null, 2));

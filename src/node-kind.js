@@ -1,16 +1,25 @@
 /** Stores information about the kind of Node object. */
 class NodeKind {}
 
-NodeKind.SourceDocumentNode = 0;
-NodeKind.ClassDeclarationNode = 1;
-NodeKind.ClassBaseClauseNode = 2;
-NodeKind.ClassMembersNode = 3;
+// Source Document Node
+NodeKind.SourceDocumentNode = "NodeKind.SourceDocumentNode";
 
-NodeKind.NodeKindMap = {
-  [NodeKind.SourceDocumentNode]: "NodeKind.SourceDocumentNode",
-  [NodeKind.ClassDeclarationNode]: "NodeKind.ClassDeclarationNode",
-  [NodeKind.ClassBaseClauseNode]: "NodeKind.ClassBaseClauseNode",
-  [NodeKind.ClassMembersNode]: "NodeKind.ClassMembersNode"
-};
+// Statement Nodes
+NodeKind.ClassDeclarationNode = "NodeKind.ClassDeclarationNode";
+NodeKind.ClassBaseClauseNode = "NodeKind.ClassBaseClauseNode";
+NodeKind.ClassMembersNode = "NodeKind.ClassMembersNode";
+NodeKind.WhileStatementNode = "NodeKind.WhileStatementNode";
+NodeKind.ExpressionStatementNode = "NodeKind.ExpressionStatementNode";
+
+// Expression Nodes
+NodeKind.UnaryOperatorExpressionNode = "NodeKind.UnaryOperatorExpressionNode";
+NodeKind.UnaryExpressionNode = "NodeKind.UnaryExpressionNode";
+NodeKind.ExpressionNode = "NodeKind.ExpressionNode";
+NodeKind.VariableNode = "NodeKind.VariableNode";
+NodeKind.AttributeNode = "NodeKind.AttributeNode";
+NodeKind.BinaryExpressionNode = "NodeKind.BinaryExpressionNode";
+NodeKind.ParenthesizedExpressionNode = "NodeKind.ParenthesizedExpressionNode";
+NodeKind.PrefixUpdateExpressionNode = "NodeKind.PrefixUpdateExpressionNode";
+NodeKind.MemberAccessExpressionNode = "NodeKind.MemberAccessExpressionNode";
 
 exports.NodeKind = NodeKind;
