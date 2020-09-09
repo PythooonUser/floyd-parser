@@ -22,6 +22,10 @@ const {
   ExpressionStatementNode
 } = require("./nodes/expression-statement-node");
 const { VerbStatementNode } = require("./nodes/verb-statement-node");
+const {
+  FunctionDeclarationNode
+} = require("./nodes/function-declaration-node");
+const { CompoundStatementNode } = require("./nodes/compound-statement-node");
 
 const {
   UnaryOperatorExpressionNode
@@ -36,6 +40,16 @@ const {
 const { VariableNode } = require("./nodes/variable-node");
 const { StringLiteralNode } = require("./nodes/string-literal-node");
 const { NumberLiteralNode } = require("./nodes/number-literal-node");
+const {
+  ArgumentExpressionListNode
+} = require("./nodes/argument-expression-list-node");
+const { ArgumentExpressionNode } = require("./nodes/argument-expression-node");
+const {
+  ParameterDeclarationListNode
+} = require("./nodes/parameter-declaration-list-node");
+const {
+  ParameterDeclarationNode
+} = require("./nodes/parameter-declaration-node");
 
 /** Generates an abstract syntax tree from a source document. */
 class Parser {
@@ -67,6 +81,13 @@ class Parser {
    */
   _advance() {
     this.token = this.lexer.advance();
+  }
+
+  /**
+   * Looks at the next token from the lexer.
+   */
+  _look(step = 1) {
+    return this.lexer.look(step);
   }
 
   /**
@@ -225,6 +246,7 @@ class Parser {
       case ParseContext.SourceElements:
         return false;
       case ParseContext.ClassMembers:
+      case ParseContext.BlockStatements:
         return kind === TokenKind.RightBraceDelimiter;
       default:
         throw new ParseContextError(`Unkown parse context '${context}'`);
@@ -239,6 +261,7 @@ class Parser {
   _isElementListInitiator(context, token) {
     switch (context) {
       case ParseContext.SourceElements:
+      case ParseContext.BlockStatements:
         return this._isStatementInitiator(token);
       case ParseContext.ClassMembers:
         return this._isClassMemberDeclarationInitiator(token);
@@ -256,6 +279,10 @@ class Parser {
       case TokenKind.ClassKeyword:
       case TokenKind.WhileKeyword:
       case TokenKind.VerbKeyword:
+      case TokenKind.IntKeyword:
+      case TokenKind.StringKeyword:
+      case TokenKind.ObjectKeyword:
+      case TokenKind.VoidKeyword:
         return true;
       default:
         return this._isExpressionInitiator(token);
@@ -299,6 +326,7 @@ class Parser {
   _getElementListParser(context) {
     switch (context) {
       case ParseContext.SourceElements:
+      case ParseContext.BlockStatements:
         return this._parseStatement.bind(this);
       case ParseContext.ClassMembers:
         return this._parseClassMember.bind(this);
@@ -317,6 +345,11 @@ class Parser {
         return this._parseWhileStatement(parent);
       case TokenKind.VerbKeyword:
         return this._parseVerbStatement(parent);
+      case TokenKind.VoidKeyword:
+      case TokenKind.IntKeyword:
+      case TokenKind.StringKeyword:
+      case TokenKind.ObjectKeyword:
+        return this._parseVariableOrFunctionDeclaration(parent);
       default:
         return this._parseExpressionStatement(parent);
     }
@@ -409,6 +442,53 @@ class Parser {
     node.metaExpression = this._parseExpression(node);
     node.rightParen = this._consume(TokenKind.RightParenDelimiter);
     node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+
+    return node;
+  }
+
+  _parseVariableOrFunctionDeclaration(parent) {
+    // TODO: What if no name follows?
+    // TODO: Should this be implemented as an element list instead?
+    const delimiter = this._look(2);
+
+    if (delimiter.kind === TokenKind.LeftParenDelimiter) {
+      return this._parseFunctionDeclaration(parent);
+    } else {
+      return this._parseVariableDeclaration(parent);
+    }
+  }
+
+  _parseFunctionDeclaration(parent) {
+    let node = new FunctionDeclarationNode();
+    node.parent = parent;
+
+    node.returnType = this._consumeChoice([
+      TokenKind.VoidKeyword,
+      TokenKind.IntKeyword,
+      TokenKind.StringKeyword,
+      TokenKind.ObjectKeyword
+    ]);
+    node.name = this._consume(TokenKind.Name);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.arguments = this._parseParameterDeclarationList(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.statements = this._parseCompoundStatement(node);
+
+    return node;
+  }
+
+  _parseVariableDeclaration(parent) {}
+
+  _parseCompoundStatement(parent) {
+    let node = new CompoundStatementNode();
+    node.parent = parent;
+
+    node.leftBrace = this._consume(TokenKind.LeftBraceDelimiter);
+    node.statements = this._parseElementList(
+      node,
+      ParseContext.BlockStatements
+    );
+    node.rightBrace = this._consume(TokenKind.RightBraceDelimiter);
 
     return node;
   }
@@ -695,10 +775,65 @@ class Parser {
   }
 
   _parseArgumentExpression(parent) {
-    let node = new ArgumentExpression();
+    let node = new ArgumentExpressionNode();
     node.parent = parent;
 
     node.argument = this._parseExpression(node);
+
+    return node;
+  }
+
+  _parseParameterDeclarationList(parent) {
+    let node = new ParameterDeclarationListNode();
+    node.parent = parent;
+
+    while (true) {
+      let token = this.token;
+
+      if (!this._isParameterDeclarationInitiator(token)) {
+        break;
+      }
+
+      const element = this._parseParameterDeclaration(node);
+      node.addElement(element);
+
+      const delimiter = this._consumeOptional(TokenKind.CommaDelimiter);
+      if (!delimiter) {
+        // TODO: Handle case where no delimiter, but another parameter declaration is following.
+        break;
+      }
+
+      node.addElement(delimiter);
+    }
+
+    return node;
+  }
+
+  _isParameterDeclarationInitiator(token) {
+    // TODO: Allow other types, but spawn an error if encountered.
+    switch (token.kind) {
+      case TokenKind.IntKeyword:
+      case TokenKind.StringKeyword:
+      case TokenKind.ObjectKeyword:
+        return true;
+
+      default:
+        false;
+    }
+  }
+
+  _parseParameterDeclaration(parent) {
+    let node = new ParameterDeclarationNode();
+    node.parent = parent;
+
+    // TODO: Reduce redundancy with _isParameterDeclarationInitiator.
+    // TODO: Allow other types, but spawn an error if encountered.
+    node.type = this._consumeChoice([
+      TokenKind.IntKeyword,
+      TokenKind.StringKeyword,
+      TokenKind.ObjectKeyword
+    ]);
+    node.name = this._consume(TokenKind.Name);
 
     return node;
   }

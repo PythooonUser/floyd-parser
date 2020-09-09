@@ -89,6 +89,65 @@ describe("Lexer", function () {
     return tokens;
   };
 
+  describe("Look Ahead", function () {
+    it("Should handle look aheads", function () {
+      const document = `foo bar`;
+
+      const token1 = {
+        start: 0,
+        length: 3,
+        kind: "TokenKind.Name",
+        trivia: [],
+        error: null
+      };
+
+      const token2 = {
+        start: 4,
+        length: 3,
+        kind: "TokenKind.Name",
+        trivia: [
+          {
+            start: 3,
+            length: 1,
+            kind: "TokenKind.Whitespace",
+            trivia: [],
+            error: null
+          }
+        ],
+        error: null
+      };
+
+      const token3 = {
+        start: 7,
+        length: 0,
+        kind: "TokenKind.EndOfFile",
+        trivia: [],
+        error: null
+      };
+
+      lexer.reset(document);
+      assertTokensEqual(lexer.look(), token1);
+      assertTokensEqual(lexer.look(2), token2);
+
+      assertTokensEqual(lexer.advance(), token1);
+      assertTokensEqual(lexer.look(), token2);
+
+      assertTokensEqual(lexer.advance(), token2);
+
+      lexer.reset(document);
+      assertTokensEqual(lexer.look(2), token2);
+      assertTokensEqual(lexer.look(), token1);
+
+      assertTokensEqual(lexer.advance(), token1);
+      assertTokensEqual(lexer.look(2), token3);
+
+      assertTokensEqual(lexer.advance(), token2);
+      assertTokensEqual(lexer.look(), token3);
+
+      assertTokensEqual(lexer.advance(), token3);
+    });
+  });
+
   describe("End Of File", function () {
     it("Should handle end of file", function () {
       const document = ``;

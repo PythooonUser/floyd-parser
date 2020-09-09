@@ -655,6 +655,515 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
     });
+
+    describe("Function Declaration", function () {
+      it("Should handle function declaration with no parameters - 01", function () {
+        const document = `int foo() {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FunctionDeclarationNode",
+              error: null,
+              returnType: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              name: {
+                start: 4,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              leftParen: {
+                start: 7,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              arguments: {
+                kind: "NodeKind.ParameterDeclarationListNode",
+                error: null,
+                elements: []
+              },
+              rightParen: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 10,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 11,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 12,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function declaration with no parameters - 02", function () {
+        const document = `int foo() {`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FunctionDeclarationNode",
+              error: null,
+              returnType: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              name: {
+                start: 4,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              leftParen: {
+                start: 7,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              arguments: {
+                kind: "NodeKind.ParameterDeclarationListNode",
+                error: null,
+                elements: []
+              },
+              rightParen: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 10,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 11,
+                  length: 0,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: "TokenError.MissingToken"
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 11,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function declaration with no parameters - 03", function () {
+        const document = `int foo()`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FunctionDeclarationNode",
+              error: null,
+              returnType: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              name: {
+                start: 4,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              leftParen: {
+                start: 7,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              arguments: {
+                kind: "NodeKind.ParameterDeclarationListNode",
+                error: null,
+                elements: []
+              },
+              rightParen: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 9,
+                  length: 0,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: "TokenError.MissingToken"
+                },
+                statements: [],
+                rightBrace: {
+                  start: 9,
+                  length: 0,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: "TokenError.MissingToken"
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 9,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function declaration with no parameters - 04", function () {
+        const document = `int foo(`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FunctionDeclarationNode",
+              error: null,
+              returnType: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              name: {
+                start: 4,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              leftParen: {
+                start: 7,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              arguments: {
+                kind: "NodeKind.ParameterDeclarationListNode",
+                error: null,
+                elements: []
+              },
+              rightParen: {
+                start: 8,
+                length: 0,
+                kind: "TokenKind.RightParenDelimiter",
+                error: "TokenError.MissingToken"
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 8,
+                  length: 0,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: "TokenError.MissingToken"
+                },
+                statements: [],
+                rightBrace: {
+                  start: 8,
+                  length: 0,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: "TokenError.MissingToken"
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 8,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function declaration with no parameters - 05", function () {
+        const document = `string foo() {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FunctionDeclarationNode",
+              error: null,
+              returnType: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.StringKeyword",
+                error: null
+              },
+              name: {
+                start: 7,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              leftParen: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              arguments: {
+                kind: "NodeKind.ParameterDeclarationListNode",
+                error: null,
+                elements: []
+              },
+              rightParen: {
+                start: 11,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 13,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 14,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 15,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function declaration with no parameters - 05", function () {
+        const document = `object foo() {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FunctionDeclarationNode",
+              error: null,
+              returnType: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.ObjectKeyword",
+                error: null
+              },
+              name: {
+                start: 7,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              leftParen: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              arguments: {
+                kind: "NodeKind.ParameterDeclarationListNode",
+                error: null,
+                elements: []
+              },
+              rightParen: {
+                start: 11,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 13,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 14,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 15,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function declaration with no parameters - 05", function () {
+        const document = `void foo() {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FunctionDeclarationNode",
+              error: null,
+              returnType: {
+                start: 0,
+                length: 4,
+                kind: "TokenKind.VoidKeyword",
+                error: null
+              },
+              name: {
+                start: 5,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              leftParen: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              arguments: {
+                kind: "NodeKind.ParameterDeclarationListNode",
+                error: null,
+                elements: []
+              },
+              rightParen: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 11,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 12,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 13,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it.skip("Should handle function declaration with no parameters - 06", function () {
+        const document = `bar foo() {}`;
+
+        const expected = {};
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
   });
 
   describe("Expressions", function () {

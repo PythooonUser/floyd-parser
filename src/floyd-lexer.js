@@ -13,6 +13,8 @@ class Lexer {
     this.index = -1;
     /** @type {Token[]} The current whitespace, comment or directive trivia Token objects. */
     this.trivia = [];
+    /** @type {Token[]} The currently cached tokens when used a look ahead previously. */
+    this.tokens = [];
   }
 
   /**
@@ -25,6 +27,7 @@ class Lexer {
     this.length = document.length;
     this.index = -1;
     this.trivia = [];
+    this.tokens = [];
   }
 
   /**
@@ -33,6 +36,21 @@ class Lexer {
    * @return {Token|null} The next Token object in the source document.
    */
   advance() {
+    if (this.tokens.length > 0) {
+      const token = this.tokens[0];
+      this.tokens = this.tokens.slice(1);
+      return token;
+    }
+
+    return this._load();
+  }
+
+  /**
+   * Returns the next token in the source document ignoring cached tokens.
+   *
+   * @return {Token|null} The next Token object in the source document.
+   */
+  _load() {
     let character = this._next();
 
     if (character === null) {
@@ -41,22 +59,22 @@ class Lexer {
 
     if (" \t\r\n".includes(character)) {
       this._parseWhitespaceTrivia();
-      return this.advance();
+      return this._load();
     }
 
     if (character === "/" && this._look() === "/") {
       this._parseSingleLineCommentTrivia();
-      return this.advance();
+      return this._load();
     }
 
     if (character === "/" && this._look() === "*") {
       this._parseMultiLineCommentTrivia();
-      return this.advance();
+      return this._load();
     }
 
     if (character === "#") {
       this._parseDirectiveTrivia();
-      return this.advance();
+      return this._load();
     }
 
     if (
@@ -89,6 +107,25 @@ class Lexer {
       TokenKind.UnknownToken,
       TokenError.UnknownToken
     );
+  }
+
+  /**
+   * Returns the next token in the source document without advancing the internal state.
+   * Use `step = 2` to get the next but one.
+   *
+   * @return {Token|null} The next Token object in the source document.
+   */
+  look(step = 1) {
+    if (this.tokens.length >= step) {
+      return this.tokens[step - 1];
+    }
+
+    const iterations = step - this.tokens.length;
+    for (let i = 0; i < iterations; i++) {
+      this.tokens.push(this._load());
+    }
+
+    return this.tokens[this.tokens.length - 1];
   }
 
   /**
