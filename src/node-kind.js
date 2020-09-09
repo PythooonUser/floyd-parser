@@ -10,6 +10,7 @@ NodeKind.ClassBaseClauseNode = "NodeKind.ClassBaseClauseNode";
 NodeKind.ClassMembersNode = "NodeKind.ClassMembersNode";
 NodeKind.WhileStatementNode = "NodeKind.WhileStatementNode";
 NodeKind.ExpressionStatementNode = "NodeKind.ExpressionStatementNode";
+NodeKind.VerbStatementNode = "NodeKind.VerbStatementNode";
 
 // Expression Nodes
 NodeKind.UnaryOperatorExpressionNode = "NodeKind.UnaryOperatorExpressionNode";
@@ -21,5 +22,7 @@ NodeKind.BinaryExpressionNode = "NodeKind.BinaryExpressionNode";
 NodeKind.ParenthesizedExpressionNode = "NodeKind.ParenthesizedExpressionNode";
 NodeKind.PrefixUpdateExpressionNode = "NodeKind.PrefixUpdateExpressionNode";
 NodeKind.MemberAccessExpressionNode = "NodeKind.MemberAccessExpressionNode";
+NodeKind.StringLiteralNode = "NodeKind.StringLiteralNode";
+NodeKind.NumberLiteralNode = "NodeKind.NumberLiteralNode";
 
 exports.NodeKind = NodeKind;

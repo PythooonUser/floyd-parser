@@ -1,7 +1,9 @@
+const fs = require("fs");
 const { Parser } = require("../src/floyd-parser");
 
 const arguments = process.argv;
-let document = "";
+let document = `verb("pattern", A_ACTION, 0);`;
+// let document = fs.readFileSync("download.floyd", "utf-8");
 
 if (arguments.length < 3) {
   console.log("USAGE: node parser-utils.js <floyd-code>\n");

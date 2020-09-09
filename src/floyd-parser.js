@@ -21,6 +21,7 @@ const { WhileStatementNode } = require("./nodes/while-statement-node");
 const {
   ExpressionStatementNode
 } = require("./nodes/expression-statement-node");
+const { VerbStatementNode } = require("./nodes/verb-statement-node");
 
 const {
   UnaryOperatorExpressionNode
@@ -33,6 +34,8 @@ const {
   PrefixUpdateExpressionNode
 } = require("./nodes/prefix-update-expression-node");
 const { VariableNode } = require("./nodes/variable-node");
+const { StringLiteralNode } = require("./nodes/string-literal-node");
+const { NumberLiteralNode } = require("./nodes/number-literal-node");
 
 /** Generates an abstract syntax tree from a source document. */
 class Parser {
@@ -252,6 +255,7 @@ class Parser {
     switch (token.kind) {
       case TokenKind.ClassKeyword:
       case TokenKind.WhileKeyword:
+      case TokenKind.VerbKeyword:
         return true;
       default:
         return this._isExpressionInitiator(token);
@@ -311,6 +315,8 @@ class Parser {
         return this._parseClassDeclaration(parent);
       case TokenKind.WhileKeyword:
         return this._parseWhileStatement(parent);
+      case TokenKind.VerbKeyword:
+        return this._parseVerbStatement(parent);
       default:
         return this._parseExpressionStatement(parent);
     }
@@ -384,6 +390,25 @@ class Parser {
     node.leftBrace = this._consume(TokenKind.LeftBraceDelimiter);
     // node.statements = this._parseStatement(node); TODO: Make this a list?
     node.rightBrace = this._consume(TokenKind.RightBraceDelimiter);
+
+    return node;
+  }
+
+  _parseVerbStatement(parent) {
+    let node = new VerbStatementNode();
+    node.parent = parent;
+
+    // TODO: Or should we better use an ArgumentExpressionList instead?
+    //  And do the error checking later?
+    node.verbKeyword = this._consume(TokenKind.VerbKeyword);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.patternExpression = this._parseExpression(node);
+    node.comma1 = this._consume(TokenKind.CommaDelimiter);
+    node.actionExpression = this._parseExpression(node);
+    node.comma2 = this._consume(TokenKind.CommaDelimiter);
+    node.metaExpression = this._parseExpression(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
 
     return node;
   }

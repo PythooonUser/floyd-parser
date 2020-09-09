@@ -562,6 +562,99 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
     });
+
+    describe("Verb Declaration", function () {
+      it("Should handle verb declaration", function () {
+        const document = `verb("pattern", A_ACTION, 0);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VerbStatementNode",
+              error: null,
+              verbKeyword: {
+                start: 0,
+                length: 4,
+                kind: "TokenKind.VerbKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              patternExpression: {
+                kind: "NodeKind.StringLiteralNode",
+                error: null,
+                literal: {
+                  start: 5,
+                  length: 9,
+                  kind: "TokenKind.StringLiteral",
+                  error: null
+                }
+              },
+              comma1: {
+                start: 14,
+                length: 1,
+                kind: "TokenKind.CommaDelimiter",
+                error: null
+              },
+              actionExpression: {
+                kind: "NodeKind.VariableNode",
+                error: null,
+                name: {
+                  start: 16,
+                  length: 8,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              comma2: {
+                start: 24,
+                length: 1,
+                kind: "TokenKind.CommaDelimiter",
+                error: null
+              },
+              metaExpression: {
+                kind: "NodeKind.NumberLiteralNode",
+                error: null,
+                literal: {
+                  start: 26,
+                  length: 1,
+                  kind: "TokenKind.NumberLiteral",
+                  error: null
+                }
+              },
+              rightParen: {
+                start: 27,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              semicolon: {
+                start: 28,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 29,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
   });
 
   describe("Expressions", function () {

@@ -500,7 +500,7 @@ describe("Lexer", function () {
     });
 
     it("Should handle keywords", function () {
-      const document = `void int string object class abstract if else switch case default break return halt do while for quit super`;
+      const document = `void int string object class abstract if else switch case default break return halt do while for quit super verb`;
 
       /** @type {Token[]} */
       const expected = [
@@ -782,7 +782,22 @@ describe("Lexer", function () {
           error: null
         },
         {
-          start: 107,
+          start: 108,
+          length: 4,
+          kind: TokenKind.VerbKeyword,
+          trivia: [
+            {
+              start: 107,
+              length: 1,
+              kind: TokenKind.Whitespace,
+              trivia: [],
+              error: null
+            }
+          ],
+          error: null
+        },
+        {
+          start: 112,
           length: 0,
           kind: TokenKind.EndOfFile,
           trivia: [],
