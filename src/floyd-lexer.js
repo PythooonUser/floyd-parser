@@ -89,6 +89,7 @@ class Lexer {
       return this._parseNumberLiteral();
     }
 
+    // TODO: Allow '' single-quoted strings to pass through, but emit an error.
     if (character === '"') {
       return this._parseStringLiteral();
     }

@@ -5,6 +5,7 @@ class NodeKind {}
 NodeKind.SourceDocumentNode = "NodeKind.SourceDocumentNode";
 
 // Statement Nodes
+NodeKind.StatementNode = "NodeKind.StatementNode";
 NodeKind.ClassDeclarationNode = "NodeKind.ClassDeclarationNode";
 NodeKind.ClassBaseClauseNode = "NodeKind.ClassBaseClauseNode";
 NodeKind.ClassMembersNode = "NodeKind.ClassMembersNode";
@@ -13,6 +14,9 @@ NodeKind.ExpressionStatementNode = "NodeKind.ExpressionStatementNode";
 NodeKind.VerbStatementNode = "NodeKind.VerbStatementNode";
 NodeKind.FunctionDeclarationNode = "NodeKind.FunctionDeclarationNode";
 NodeKind.CompoundStatementNode = "NodeKind.CompoundStatementNode";
+NodeKind.IfStatementNode = "NodeKind.IfStatementNode";
+NodeKind.ElseClauseNode = "NodeKind.ElseClauseNode";
+NodeKind.ReturnStatementNode = "NodeKind.ReturnStatementNode";
 
 // Expression Nodes
 NodeKind.UnaryOperatorExpressionNode = "NodeKind.UnaryOperatorExpressionNode";
@@ -30,5 +34,6 @@ NodeKind.ParameterDeclarationListNode = "NodeKind.ParameterDeclarationListNode";
 NodeKind.ArgumentExpressionListNode = "NodeKind.ArgumentExpressionListNode";
 NodeKind.ArgumentExpressionNode = "NodeKind.ArgumentExpressionNode";
 NodeKind.ParameterDeclarationNode = "NodeKind.ParameterDeclarationNode";
+NodeKind.CallExpressionNode = "NodeKind.CallExpressionNode";
 
 exports.NodeKind = NodeKind;

@@ -26,6 +26,9 @@ const {
   FunctionDeclarationNode
 } = require("./nodes/function-declaration-node");
 const { CompoundStatementNode } = require("./nodes/compound-statement-node");
+const { IfStatementNode } = require("./nodes/if-statement-node");
+const { ElseClauseNode } = require("./nodes/else-clause-node");
+const { ReturnStatementNode } = require("./nodes/return-statement-node");
 
 const {
   UnaryOperatorExpressionNode
@@ -50,6 +53,10 @@ const {
 const {
   ParameterDeclarationNode
 } = require("./nodes/parameter-declaration-node");
+const {
+  MemberAccessExpressionNode
+} = require("./nodes/member-access-expression-node");
+const { CallExpressionNode } = require("./nodes/call-expression-node");
 
 /** Generates an abstract syntax tree from a source document. */
 class Parser {
@@ -279,6 +286,8 @@ class Parser {
       case TokenKind.ClassKeyword:
       case TokenKind.WhileKeyword:
       case TokenKind.VerbKeyword:
+      case TokenKind.IfKeyword:
+      case TokenKind.ReturnKeyword:
       case TokenKind.IntKeyword:
       case TokenKind.StringKeyword:
       case TokenKind.ObjectKeyword:
@@ -293,6 +302,8 @@ class Parser {
   _isExpressionInitiator(token) {
     switch (token.kind) {
       case TokenKind.Name:
+      case TokenKind.NumberLiteral:
+      case TokenKind.StringLiteral:
       case TokenKind.PlusOperator:
       case TokenKind.PlusPlusOperator:
       case TokenKind.MinusMinusOperator:
@@ -350,6 +361,10 @@ class Parser {
       case TokenKind.StringKeyword:
       case TokenKind.ObjectKeyword:
         return this._parseVariableOrFunctionDeclaration(parent);
+      case TokenKind.IfKeyword:
+        return this._parseIfStatement(parent);
+      case TokenKind.ReturnKeyword:
+        return this._parseReturnStatement(parent);
       default:
         return this._parseExpressionStatement(parent);
     }
@@ -478,6 +493,47 @@ class Parser {
   }
 
   _parseVariableDeclaration(parent) {}
+
+  _parseIfStatement(parent) {
+    let node = new IfStatementNode();
+    node.parent = parent;
+
+    node.ifKeyword = this._consume(TokenKind.IfKeyword);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.condition = this._parseExpression(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.statements = this._parseCompoundStatement(node);
+
+    const token = this.token;
+    if (token.kind === TokenKind.ElseKeyword) {
+      node.elseClause = this._parseElseClause(node);
+    }
+
+    return node;
+  }
+
+  _parseElseClause(parent) {
+    let node = new ElseClauseNode();
+    node.parent = parent;
+
+    node.elseKeyword = this._consume(TokenKind.ElseKeyword);
+    node.statements = this._parseCompoundStatement(node);
+
+    return node;
+  }
+
+  _parseReturnStatement(parent) {
+    let node = new ReturnStatementNode();
+    node.parent = parent;
+
+    node.returnKeyword = this._consume(TokenKind.ReturnKeyword);
+    if (this._isExpressionInitiator(this.token)) {
+      node.expression = this._parseExpression(node);
+    }
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+
+    return node;
+  }
 
   _parseCompoundStatement(parent) {
     let node = new CompoundStatementNode();
@@ -680,8 +736,8 @@ class Parser {
         return this._parsePrefixUpdateExpression(parent);
 
       default:
-        // TODO: Parse expression and postfix rest.
-        return this._parsePrimaryExpression();
+        const expression = this._parsePrimaryExpression();
+        return this._parsePostfixExpression(expression);
     }
   }
 
@@ -719,15 +775,15 @@ class Parser {
 
     switch (token.kind) {
       case TokenKind.DotOperator:
-        // TODO: Parse postfix expression rest.
-        const memberAccess = this._parseMemberAccess(expression);
-        return this._parsePostfixExpression(memberAccess);
+        const memberAccessExpression = this._parseMemberAccess(expression);
+        return this._parsePostfixExpression(memberAccessExpression);
 
       case TokenKind.LeftParenDelimiter:
-        return this._parseCallExpression(expression);
+        const callExpression = this._parseCallExpression(expression);
+        return this._parsePostfixExpression(callExpression);
 
       default:
-        break;
+        return expression;
     }
   }
 

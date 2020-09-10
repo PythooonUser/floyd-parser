@@ -1012,7 +1012,7 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
 
-      it("Should handle function declaration with no parameters - 05", function () {
+      it("Should handle function declaration with no parameters - 06", function () {
         const document = `object foo() {}`;
 
         const expected = {
@@ -1083,7 +1083,7 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
 
-      it("Should handle function declaration with no parameters - 05", function () {
+      it("Should handle function declaration with no parameters - 07", function () {
         const document = `void foo() {}`;
 
         const expected = {
@@ -1154,10 +1154,876 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
 
-      it.skip("Should handle function declaration with no parameters - 06", function () {
+      it.skip("Should handle function declaration with no parameters - 08", function () {
         const document = `bar foo() {}`;
 
         const expected = {};
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
+    describe("If-Else Statement", function () {
+      it("Should handle if statement - 01", function () {
+        const document = `if() {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.IfStatementNode",
+              error: null,
+              ifKeyword: {
+                start: 0,
+                length: 2,
+                kind: "TokenKind.IfKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 2,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              condition: {
+                start: 3,
+                length: 0,
+                kind: "TokenKind.Expression",
+                error: "TokenError.MissingToken"
+              },
+              rightParen: {
+                start: 3,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 5,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 6,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              },
+              elseClause: null
+            }
+          ],
+          endOfFile: {
+            start: 7,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle if statement - 02", function () {
+        const document = `if(a == b) {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.IfStatementNode",
+              error: null,
+              ifKeyword: {
+                start: 0,
+                length: 2,
+                kind: "TokenKind.IfKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 2,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              condition: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 5,
+                  length: 2,
+                  kind: "TokenKind.EqualsEqualsOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 8,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              rightParen: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 11,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 12,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              },
+              elseClause: null
+            }
+          ],
+          endOfFile: {
+            start: 13,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle if statement - 03", function () {
+        const document = `if(a == b) { foo(); }`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.IfStatementNode",
+              error: null,
+              ifKeyword: {
+                start: 0,
+                length: 2,
+                kind: "TokenKind.IfKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 2,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              condition: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 5,
+                  length: 2,
+                  kind: "TokenKind.EqualsEqualsOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 8,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              rightParen: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 11,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [
+                  {
+                    kind: "NodeKind.ExpressionStatementNode",
+                    error: null,
+                    expression: {
+                      kind: "NodeKind.CallExpressionNode",
+                      error: null,
+                      expression: {
+                        kind: "NodeKind.VariableNode",
+                        error: null,
+                        name: {
+                          start: 13,
+                          length: 3,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      },
+                      leftParen: {
+                        start: 16,
+                        length: 1,
+                        kind: "TokenKind.LeftParenDelimiter",
+                        error: null
+                      },
+                      arguments: {
+                        kind: "NodeKind.ArgumentExpressionListNode",
+                        error: null,
+                        elements: []
+                      },
+                      rightParen: {
+                        start: 17,
+                        length: 1,
+                        kind: "TokenKind.RightParenDelimiter",
+                        error: null
+                      }
+                    },
+                    semicolon: {
+                      start: 18,
+                      length: 1,
+                      kind: "TokenKind.SemicolonDelimiter",
+                      error: null
+                    }
+                  }
+                ],
+                rightBrace: {
+                  start: 20,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              },
+              elseClause: null
+            }
+          ],
+          endOfFile: {
+            start: 21,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle if statement - 04", function () {
+        const document = `if(a == b) { } else { }`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.IfStatementNode",
+              error: null,
+              ifKeyword: {
+                start: 0,
+                length: 2,
+                kind: "TokenKind.IfKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 2,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              condition: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 5,
+                  length: 2,
+                  kind: "TokenKind.EqualsEqualsOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 8,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              rightParen: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 11,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 13,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              },
+              elseClause: {
+                kind: "NodeKind.ElseClauseNode",
+                error: null,
+                elseKeyword: {
+                  start: 15,
+                  length: 4,
+                  kind: "TokenKind.ElseKeyword",
+                  error: null
+                },
+                statements: {
+                  kind: "NodeKind.CompoundStatementNode",
+                  error: null,
+                  leftBrace: {
+                    start: 20,
+                    length: 1,
+                    kind: "TokenKind.LeftBraceDelimiter",
+                    error: null
+                  },
+                  statements: [],
+                  rightBrace: {
+                    start: 22,
+                    length: 1,
+                    kind: "TokenKind.RightBraceDelimiter",
+                    error: null
+                  }
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 23,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle if statement - 05", function () {
+        const document = `if() { if() { } else { } } else { }`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.IfStatementNode",
+              error: null,
+              ifKeyword: {
+                start: 0,
+                length: 2,
+                kind: "TokenKind.IfKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 2,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              condition: {
+                start: 3,
+                length: 0,
+                kind: "TokenKind.Expression",
+                error: "TokenError.MissingToken"
+              },
+              rightParen: {
+                start: 3,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 5,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [
+                  {
+                    kind: "NodeKind.IfStatementNode",
+                    error: null,
+                    ifKeyword: {
+                      start: 7,
+                      length: 2,
+                      kind: "TokenKind.IfKeyword",
+                      error: null
+                    },
+                    leftParen: {
+                      start: 9,
+                      length: 1,
+                      kind: "TokenKind.LeftParenDelimiter",
+                      error: null
+                    },
+                    condition: {
+                      start: 10,
+                      length: 0,
+                      kind: "TokenKind.Expression",
+                      error: "TokenError.MissingToken"
+                    },
+                    rightParen: {
+                      start: 10,
+                      length: 1,
+                      kind: "TokenKind.RightParenDelimiter",
+                      error: null
+                    },
+                    statements: {
+                      kind: "NodeKind.CompoundStatementNode",
+                      error: null,
+                      leftBrace: {
+                        start: 12,
+                        length: 1,
+                        kind: "TokenKind.LeftBraceDelimiter",
+                        error: null
+                      },
+                      statements: [],
+                      rightBrace: {
+                        start: 14,
+                        length: 1,
+                        kind: "TokenKind.RightBraceDelimiter",
+                        error: null
+                      }
+                    },
+                    elseClause: {
+                      kind: "NodeKind.ElseClauseNode",
+                      error: null,
+                      elseKeyword: {
+                        start: 16,
+                        length: 4,
+                        kind: "TokenKind.ElseKeyword",
+                        error: null
+                      },
+                      statements: {
+                        kind: "NodeKind.CompoundStatementNode",
+                        error: null,
+                        leftBrace: {
+                          start: 21,
+                          length: 1,
+                          kind: "TokenKind.LeftBraceDelimiter",
+                          error: null
+                        },
+                        statements: [],
+                        rightBrace: {
+                          start: 23,
+                          length: 1,
+                          kind: "TokenKind.RightBraceDelimiter",
+                          error: null
+                        }
+                      }
+                    }
+                  }
+                ],
+                rightBrace: {
+                  start: 25,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              },
+              elseClause: {
+                kind: "NodeKind.ElseClauseNode",
+                error: null,
+                elseKeyword: {
+                  start: 27,
+                  length: 4,
+                  kind: "TokenKind.ElseKeyword",
+                  error: null
+                },
+                statements: {
+                  kind: "NodeKind.CompoundStatementNode",
+                  error: null,
+                  leftBrace: {
+                    start: 32,
+                    length: 1,
+                    kind: "TokenKind.LeftBraceDelimiter",
+                    error: null
+                  },
+                  statements: [],
+                  rightBrace: {
+                    start: 34,
+                    length: 1,
+                    kind: "TokenKind.RightBraceDelimiter",
+                    error: null
+                  }
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 35,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
+    describe("Return Statement", function () {
+      it("Should handle return statement - 01", function () {
+        const document = `return;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ReturnStatementNode",
+              error: null,
+              returnKeyword: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.ReturnKeyword",
+                error: null
+              },
+              expression: null,
+              semicolon: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 7,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle return statement - 02", function () {
+        const document = `return 0;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ReturnStatementNode",
+              error: null,
+              returnKeyword: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.ReturnKeyword",
+                error: null
+              },
+              expression: {
+                kind: "NodeKind.NumberLiteralNode",
+                error: null,
+                literal: {
+                  start: 7,
+                  length: 1,
+                  kind: "TokenKind.NumberLiteral",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 9,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle return statement - 03", function () {
+        const document = `return (0);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ReturnStatementNode",
+              error: null,
+              returnKeyword: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.ReturnKeyword",
+                error: null
+              },
+              expression: {
+                kind: "NodeKind.ParenthesizedExpressionNode",
+                error: null,
+                leftParen: {
+                  start: 7,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                expression: {
+                  kind: "NodeKind.NumberLiteralNode",
+                  error: null,
+                  literal: {
+                    start: 8,
+                    length: 1,
+                    kind: "TokenKind.NumberLiteral",
+                    error: null
+                  }
+                },
+                rightParen: {
+                  start: 9,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 11,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle return statement - 04", function () {
+        const document = `return foo(bar()).baz + 1;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ReturnStatementNode",
+              error: null,
+              returnKeyword: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.ReturnKeyword",
+                error: null
+              },
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.MemberAccessExpressionNode",
+                  error: null,
+                  expression: {
+                    kind: "NodeKind.CallExpressionNode",
+                    error: null,
+                    expression: {
+                      kind: "NodeKind.VariableNode",
+                      error: null,
+                      name: {
+                        start: 7,
+                        length: 3,
+                        kind: "TokenKind.Name",
+                        error: null
+                      }
+                    },
+                    leftParen: {
+                      start: 10,
+                      length: 1,
+                      kind: "TokenKind.LeftParenDelimiter",
+                      error: null
+                    },
+                    arguments: {
+                      kind: "NodeKind.ArgumentExpressionListNode",
+                      error: null,
+                      elements: [
+                        {
+                          kind: "NodeKind.ArgumentExpressionNode",
+                          error: null,
+                          argument: {
+                            kind: "NodeKind.CallExpressionNode",
+                            error: null,
+                            expression: {
+                              kind: "NodeKind.VariableNode",
+                              error: null,
+                              name: {
+                                start: 11,
+                                length: 3,
+                                kind: "TokenKind.Name",
+                                error: null
+                              }
+                            },
+                            leftParen: {
+                              start: 14,
+                              length: 1,
+                              kind: "TokenKind.LeftParenDelimiter",
+                              error: null
+                            },
+                            arguments: {
+                              kind: "NodeKind.ArgumentExpressionListNode",
+                              error: null,
+                              elements: []
+                            },
+                            rightParen: {
+                              start: 15,
+                              length: 1,
+                              kind: "TokenKind.RightParenDelimiter",
+                              error: null
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    rightParen: {
+                      start: 16,
+                      length: 1,
+                      kind: "TokenKind.RightParenDelimiter",
+                      error: null
+                    }
+                  },
+                  dot: {
+                    start: 17,
+                    length: 1,
+                    kind: "TokenKind.DotOperator",
+                    error: null
+                  },
+                  member: {
+                    start: 18,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 22,
+                  length: 1,
+                  kind: "TokenKind.PlusOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.NumberLiteralNode",
+                  error: null,
+                  literal: {
+                    start: 24,
+                    length: 1,
+                    kind: "TokenKind.NumberLiteral",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 25,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 26,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
 
         const actual = parseSourceDocument(document);
 
@@ -2370,6 +3236,1411 @@ describe("Parser", function () {
           ],
           endOfFile: {
             start: 12,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle member access - 01", function () {
+        const document = `foo.bar;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.MemberAccessExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                dot: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.DotOperator",
+                  error: null
+                },
+                member: {
+                  start: 4,
+                  length: 3,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 7,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 8,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle member access - 02", function () {
+        const document = `(foo).bar;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.MemberAccessExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.ParenthesizedExpressionNode",
+                  error: null,
+                  leftParen: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 1,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  rightParen: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  }
+                },
+                dot: {
+                  start: 5,
+                  length: 1,
+                  kind: "TokenKind.DotOperator",
+                  error: null
+                },
+                member: {
+                  start: 6,
+                  length: 3,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 10,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle member access - 03", function () {
+        const document = `foo.foo.bar;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.MemberAccessExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.MemberAccessExpressionNode",
+                  error: null,
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 0,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  dot: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.DotOperator",
+                    error: null
+                  },
+                  member: {
+                    start: 4,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                dot: {
+                  start: 7,
+                  length: 1,
+                  kind: "TokenKind.DotOperator",
+                  error: null
+                },
+                member: {
+                  start: 8,
+                  length: 3,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 11,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 12,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function call - 01", function () {
+        const document = `foo();`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: []
+                },
+                rightParen: {
+                  start: 4,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function call - 02", function () {
+        const document = `foo(baz);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: [
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.VariableNode",
+                        error: null,
+                        name: {
+                          start: 4,
+                          length: 3,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      }
+                    }
+                  ]
+                },
+                rightParen: {
+                  start: 7,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 9,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function call - 03", function () {
+        const document = `foo(baz, "Hello");`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: [
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.VariableNode",
+                        error: null,
+                        name: {
+                          start: 4,
+                          length: 3,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      }
+                    },
+                    {
+                      start: 7,
+                      length: 1,
+                      kind: "TokenKind.CommaDelimiter",
+                      error: null
+                    },
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.StringLiteralNode",
+                        error: null,
+                        literal: {
+                          start: 9,
+                          length: 7,
+                          kind: "TokenKind.StringLiteral",
+                          error: null
+                        }
+                      }
+                    }
+                  ]
+                },
+                rightParen: {
+                  start: 16,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 17,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 18,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function call - 04", function () {
+        const document = `foo(bar());`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: [
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.CallExpressionNode",
+                        error: null,
+                        expression: {
+                          kind: "NodeKind.VariableNode",
+                          error: null,
+                          name: {
+                            start: 4,
+                            length: 3,
+                            kind: "TokenKind.Name",
+                            error: null
+                          }
+                        },
+                        leftParen: {
+                          start: 7,
+                          length: 1,
+                          kind: "TokenKind.LeftParenDelimiter",
+                          error: null
+                        },
+                        arguments: {
+                          kind: "NodeKind.ArgumentExpressionListNode",
+                          error: null,
+                          elements: []
+                        },
+                        rightParen: {
+                          start: 8,
+                          length: 1,
+                          kind: "TokenKind.RightParenDelimiter",
+                          error: null
+                        }
+                      }
+                    }
+                  ]
+                },
+                rightParen: {
+                  start: 9,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 11,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle function call - 05", function () {
+        const document = `foo(bar().baz);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: [
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.MemberAccessExpressionNode",
+                        error: null,
+                        expression: {
+                          kind: "NodeKind.CallExpressionNode",
+                          error: null,
+                          expression: {
+                            kind: "NodeKind.VariableNode",
+                            error: null,
+                            name: {
+                              start: 4,
+                              length: 3,
+                              kind: "TokenKind.Name",
+                              error: null
+                            }
+                          },
+                          leftParen: {
+                            start: 7,
+                            length: 1,
+                            kind: "TokenKind.LeftParenDelimiter",
+                            error: null
+                          },
+                          arguments: {
+                            kind: "NodeKind.ArgumentExpressionListNode",
+                            error: null,
+                            elements: []
+                          },
+                          rightParen: {
+                            start: 8,
+                            length: 1,
+                            kind: "TokenKind.RightParenDelimiter",
+                            error: null
+                          }
+                        },
+                        dot: {
+                          start: 9,
+                          length: 1,
+                          kind: "TokenKind.DotOperator",
+                          error: null
+                        },
+                        member: {
+                          start: 10,
+                          length: 3,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      }
+                    }
+                  ]
+                },
+                rightParen: {
+                  start: 13,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 14,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 15,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle member call - 01", function () {
+        const document = `foo.bar();`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.MemberAccessExpressionNode",
+                  error: null,
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 0,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  dot: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.DotOperator",
+                    error: null
+                  },
+                  member: {
+                    start: 4,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 7,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: []
+                },
+                rightParen: {
+                  start: 8,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 10,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle member call - 02", function () {
+        const document = `foo.bar(baz);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.MemberAccessExpressionNode",
+                  error: null,
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 0,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  dot: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.DotOperator",
+                    error: null
+                  },
+                  member: {
+                    start: 4,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 7,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: [
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.VariableNode",
+                        error: null,
+                        name: {
+                          start: 8,
+                          length: 3,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      }
+                    }
+                  ]
+                },
+                rightParen: {
+                  start: 11,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 12,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 13,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle member call - 03", function () {
+        const document = `foo.bar(baz, "Hello");`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.MemberAccessExpressionNode",
+                  error: null,
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 0,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  dot: {
+                    start: 3,
+                    length: 1,
+                    kind: "TokenKind.DotOperator",
+                    error: null
+                  },
+                  member: {
+                    start: 4,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 7,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: [
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.VariableNode",
+                        error: null,
+                        name: {
+                          start: 8,
+                          length: 3,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      }
+                    },
+                    {
+                      start: 11,
+                      length: 1,
+                      kind: "TokenKind.CommaDelimiter",
+                      error: null
+                    },
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.StringLiteralNode",
+                        error: null,
+                        literal: {
+                          start: 13,
+                          length: 7,
+                          kind: "TokenKind.StringLiteral",
+                          error: null
+                        }
+                      }
+                    }
+                  ]
+                },
+                rightParen: {
+                  start: 20,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 21,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 22,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle conditional expressions - 01", function () {
+        const document = `a || b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 2,
+                  length: 2,
+                  kind: "TokenKind.BarBarOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 5,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 7,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle conditional expressions - 02", function () {
+        const document = `a && b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 2,
+                  length: 2,
+                  kind: "TokenKind.AmpersandAmpersandOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 5,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 7,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle conditional expressions - 03", function () {
+        const document = `(a + b) || c;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.ParenthesizedExpressionNode",
+                  error: null,
+                  leftParen: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.BinaryExpressionNode",
+                    error: null,
+                    leftOperand: {
+                      kind: "NodeKind.VariableNode",
+                      error: null,
+                      name: {
+                        start: 1,
+                        length: 1,
+                        kind: "TokenKind.Name",
+                        error: null
+                      }
+                    },
+                    operator: {
+                      start: 3,
+                      length: 1,
+                      kind: "TokenKind.PlusOperator",
+                      error: null
+                    },
+                    rightOperand: {
+                      kind: "NodeKind.VariableNode",
+                      error: null,
+                      name: {
+                        start: 5,
+                        length: 1,
+                        kind: "TokenKind.Name",
+                        error: null
+                      }
+                    }
+                  },
+                  rightParen: {
+                    start: 6,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 8,
+                  length: 2,
+                  kind: "TokenKind.BarBarOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 11,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 12,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 13,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle conditional expressions - 03", function () {
+        const document = `a || b || c;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.BinaryExpressionNode",
+                  error: null,
+                  leftOperand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 0,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 2,
+                    length: 2,
+                    kind: "TokenKind.BarBarOperator",
+                    error: null
+                  },
+                  rightOperand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 5,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  }
+                },
+                operator: {
+                  start: 7,
+                  length: 2,
+                  kind: "TokenKind.BarBarOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 10,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 11,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 12,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle conditional expressions - 03", function () {
+        const document = `a.foo || b.bar() || c.baz == 1234;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.BinaryExpressionNode",
+                  error: null,
+                  leftOperand: {
+                    kind: "NodeKind.MemberAccessExpressionNode",
+                    error: null,
+                    expression: {
+                      kind: "NodeKind.VariableNode",
+                      error: null,
+                      name: {
+                        start: 0,
+                        length: 1,
+                        kind: "TokenKind.Name",
+                        error: null
+                      }
+                    },
+                    dot: {
+                      start: 1,
+                      length: 1,
+                      kind: "TokenKind.DotOperator",
+                      error: null
+                    },
+                    member: {
+                      start: 2,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 6,
+                    length: 2,
+                    kind: "TokenKind.BarBarOperator",
+                    error: null
+                  },
+                  rightOperand: {
+                    kind: "NodeKind.CallExpressionNode",
+                    error: null,
+                    expression: {
+                      kind: "NodeKind.MemberAccessExpressionNode",
+                      error: null,
+                      expression: {
+                        kind: "NodeKind.VariableNode",
+                        error: null,
+                        name: {
+                          start: 9,
+                          length: 1,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      },
+                      dot: {
+                        start: 10,
+                        length: 1,
+                        kind: "TokenKind.DotOperator",
+                        error: null
+                      },
+                      member: {
+                        start: 11,
+                        length: 3,
+                        kind: "TokenKind.Name",
+                        error: null
+                      }
+                    },
+                    leftParen: {
+                      start: 14,
+                      length: 1,
+                      kind: "TokenKind.LeftParenDelimiter",
+                      error: null
+                    },
+                    arguments: {
+                      kind: "NodeKind.ArgumentExpressionListNode",
+                      error: null,
+                      elements: []
+                    },
+                    rightParen: {
+                      start: 15,
+                      length: 1,
+                      kind: "TokenKind.RightParenDelimiter",
+                      error: null
+                    }
+                  }
+                },
+                operator: {
+                  start: 17,
+                  length: 2,
+                  kind: "TokenKind.BarBarOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.BinaryExpressionNode",
+                  error: null,
+                  leftOperand: {
+                    kind: "NodeKind.MemberAccessExpressionNode",
+                    error: null,
+                    expression: {
+                      kind: "NodeKind.VariableNode",
+                      error: null,
+                      name: {
+                        start: 20,
+                        length: 1,
+                        kind: "TokenKind.Name",
+                        error: null
+                      }
+                    },
+                    dot: {
+                      start: 21,
+                      length: 1,
+                      kind: "TokenKind.DotOperator",
+                      error: null
+                    },
+                    member: {
+                      start: 22,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 26,
+                    length: 2,
+                    kind: "TokenKind.EqualsEqualsOperator",
+                    error: null
+                  },
+                  rightOperand: {
+                    kind: "NodeKind.NumberLiteralNode",
+                    error: null,
+                    literal: {
+                      start: 29,
+                      length: 4,
+                      kind: "TokenKind.NumberLiteral",
+                      error: null
+                    }
+                  }
+                }
+              },
+              semicolon: {
+                start: 33,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 34,
             length: 0,
             kind: "TokenKind.EndOfFile",
             error: null
