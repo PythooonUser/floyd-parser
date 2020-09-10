@@ -4651,6 +4651,323 @@ describe("Parser", function () {
 
         assertNodesEqual(actual, expected);
       });
+
+      it("Should handle array element access expressions - 01", function () {
+        const document = `foo[0];`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.ArrayElementAccessExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftBracket: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftBracketDelimiter",
+                  error: null
+                },
+                index: {
+                  kind: "NodeKind.NumberLiteralNode",
+                  error: null,
+                  literal: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.NumberLiteral",
+                    error: null
+                  }
+                },
+                rightBracket: {
+                  start: 5,
+                  length: 1,
+                  kind: "TokenKind.RightBracketDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 7,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle array element access expressions - 02", function () {
+        const document = `foo[bar().baz + 1];`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.ArrayElementAccessExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftBracket: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftBracketDelimiter",
+                  error: null
+                },
+                index: {
+                  kind: "NodeKind.BinaryExpressionNode",
+                  error: null,
+                  leftOperand: {
+                    kind: "NodeKind.MemberAccessExpressionNode",
+                    error: null,
+                    expression: {
+                      kind: "NodeKind.CallExpressionNode",
+                      error: null,
+                      expression: {
+                        kind: "NodeKind.VariableNode",
+                        error: null,
+                        name: {
+                          start: 4,
+                          length: 3,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      },
+                      leftParen: {
+                        start: 7,
+                        length: 1,
+                        kind: "TokenKind.LeftParenDelimiter",
+                        error: null
+                      },
+                      arguments: {
+                        kind: "NodeKind.ArgumentExpressionListNode",
+                        error: null,
+                        elements: []
+                      },
+                      rightParen: {
+                        start: 8,
+                        length: 1,
+                        kind: "TokenKind.RightParenDelimiter",
+                        error: null
+                      }
+                    },
+                    dot: {
+                      start: 9,
+                      length: 1,
+                      kind: "TokenKind.DotOperator",
+                      error: null
+                    },
+                    member: {
+                      start: 10,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 14,
+                    length: 1,
+                    kind: "TokenKind.PlusOperator",
+                    error: null
+                  },
+                  rightOperand: {
+                    kind: "NodeKind.NumberLiteralNode",
+                    error: null,
+                    literal: {
+                      start: 16,
+                      length: 1,
+                      kind: "TokenKind.NumberLiteral",
+                      error: null
+                    }
+                  }
+                },
+                rightBracket: {
+                  start: 17,
+                  length: 1,
+                  kind: "TokenKind.RightBracketDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 18,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 19,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle array element access expressions - 03", function () {
+        const document = `foo[];`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.ArrayElementAccessExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftBracket: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftBracketDelimiter",
+                  error: null
+                },
+                index: {
+                  start: 4,
+                  length: 0,
+                  kind: "TokenKind.ArrayElementIndex",
+                  error: "TokenError.MissingToken"
+                },
+                rightBracket: {
+                  start: 4,
+                  length: 1,
+                  kind: "TokenKind.RightBracketDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle array element access expressions - 04", function () {
+        const document = `foo[;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.ArrayElementAccessExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftBracket: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftBracketDelimiter",
+                  error: null
+                },
+                index: {
+                  start: 4,
+                  length: 0,
+                  kind: "TokenKind.ArrayElementIndex",
+                  error: "TokenError.MissingToken"
+                },
+                rightBracket: {
+                  start: 4,
+                  length: 0,
+                  kind: "TokenKind.RightBracketDelimiter",
+                  error: "TokenError.MissingToken"
+                }
+              },
+              semicolon: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 5,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
     });
 
     describe.skip("Ternary Expressions", function () {});

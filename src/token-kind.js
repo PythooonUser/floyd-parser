@@ -98,6 +98,7 @@ TokenKind.DoubleQuoteDelimiter = "TokenKind.DoubleQuoteDelimiter";
 // Meta Kinds
 TokenKind.Expression = "TokenKind.Expression";
 TokenKind.MemberName = "TokenKind.MemberName";
+TokenKind.ArrayElementIndex = "TokenKind.ArrayElementIndex";
 
 /** Provides a mapping from characters to keyword TokenKind objects. */
 TokenKind.KeywordTokenMap = {

@@ -57,6 +57,9 @@ const {
   MemberAccessExpressionNode
 } = require("./nodes/member-access-expression-node");
 const { CallExpressionNode } = require("./nodes/call-expression-node");
+const {
+  ArrayElementAccessExpressionNode
+} = require("./nodes/array-element-access-expression-node");
 
 /** Generates an abstract syntax tree from a source document. */
 class Parser {
@@ -782,6 +785,12 @@ class Parser {
         const callExpression = this._parseCallExpression(expression);
         return this._parsePostfixExpression(callExpression);
 
+      case TokenKind.LeftBracketDelimiter:
+        const arrayElementAccessExpression = this._parseArrayElementAccessExpression(
+          expression
+        );
+        return this._parsePostfixExpression(arrayElementAccessExpression);
+
       default:
         return expression;
     }
@@ -796,6 +805,26 @@ class Parser {
     node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
     node.arguments = this._parseArgumentExpressionList(node);
     node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+
+    return node;
+  }
+
+  _parseArrayElementAccessExpression(expression) {
+    let node = new ArrayElementAccessExpressionNode();
+    node.parent = expression.parent;
+    expression.parent = node;
+
+    node.expression = expression;
+    node.leftBracket = this._consume(TokenKind.LeftBracketDelimiter);
+
+    let index = this._parseExpression(node);
+    // TODO: Could be simplified using a MissingToken instead.
+    if (index instanceof Token && index.error === TokenError.MissingToken) {
+      index.kind = TokenKind.ArrayElementIndex;
+    }
+    node.index = index;
+
+    node.rightBracket = this._consume(TokenKind.RightBracketDelimiter);
 
     return node;
   }

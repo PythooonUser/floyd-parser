@@ -35,5 +35,7 @@ NodeKind.ArgumentExpressionListNode = "NodeKind.ArgumentExpressionListNode";
 NodeKind.ArgumentExpressionNode = "NodeKind.ArgumentExpressionNode";
 NodeKind.ParameterDeclarationNode = "NodeKind.ParameterDeclarationNode";
 NodeKind.CallExpressionNode = "NodeKind.CallExpressionNode";
+NodeKind.ArrayElementAccessExpressionNode =
+  "NodeKind.ArrayElementAccessExpressionNode";
 
 exports.NodeKind = NodeKind;
