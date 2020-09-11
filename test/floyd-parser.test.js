@@ -6904,6 +6904,103 @@ describe("Parser", function () {
       });
     });
 
-    describe.skip("Ternary Expressions", function () {});
+    describe("Ternary Expressions", function () {
+      it("Should handle ternary expressions", function () {
+        const document = `a > b ? a : b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.TernaryExpressionNode",
+                error: null,
+                condition: {
+                  kind: "NodeKind.BinaryExpressionNode",
+                  error: null,
+                  leftOperand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 0,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  operator: {
+                    start: 2,
+                    length: 1,
+                    kind: "TokenKind.GreaterThanOperator",
+                    error: null
+                  },
+                  rightOperand: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 4,
+                      length: 1,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  }
+                },
+                question: {
+                  start: 6,
+                  length: 1,
+                  kind: "TokenKind.QuestionOperator",
+                  error: null
+                },
+                truthyExpression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 8,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                colon: {
+                  start: 10,
+                  length: 1,
+                  kind: "TokenKind.ColonOperator",
+                  error: null
+                },
+                falsyExpression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 12,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                }
+              },
+              semicolon: {
+                start: 13,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 14,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
   });
 });

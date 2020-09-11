@@ -3,6 +3,7 @@ const { Lexer } = require("./floyd-lexer");
 const { Token } = require("./token");
 const { TokenError } = require("./token-error");
 const { TokenKind } = require("./token-kind");
+const { Node } = require("./node");
 
 const { ParseContext } = require("./parse-context");
 const { ParseContextError } = require("./parse-context-error");
@@ -82,6 +83,7 @@ const { ArrayLiteralNode } = require("./nodes/array-literal-node");
 const {
   VariableInitializationClauseNode
 } = require("./nodes/variable-initialization-clause-node");
+const { TernaryExpressionNode } = require("./nodes/ternary-expression-node");
 
 /** Generates an abstract syntax tree from a source document. */
 class Parser {
@@ -1019,17 +1021,18 @@ class Parser {
 
       this._advance();
 
-      const rightOperand = this._parseBinaryExpressionOrHigher(
-        precedenceAndAssociativity.precedence,
-        null
-      );
-
-      leftOperand = this._parseBinaryExpression(
-        leftOperand,
-        token,
-        rightOperand,
-        parent
-      );
+      leftOperand =
+        token.kind === TokenKind.QuestionOperator
+          ? this._parseTernaryExpression(leftOperand, token, parent)
+          : this._parseBinaryExpression(
+              leftOperand,
+              token,
+              this._parseBinaryExpressionOrHigher(
+                precedenceAndAssociativity.precedence,
+                null
+              ),
+              parent
+            );
     }
 
     return leftOperand;
@@ -1045,6 +1048,26 @@ class Parser {
     node.leftOperand = leftOperand;
     node.operator = operator;
     node.rightOperand = rightOperand;
+
+    return node;
+  }
+
+  _parseTernaryExpression(leftOperand, operator, parent) {
+    let node = new TernaryExpressionNode();
+
+    // In case `leftOperand` is e.g. a MissingToken.
+    if (leftOperand instanceof Node) {
+      node.parent = leftOperand.parent;
+      leftOperand.parent = node;
+    } else {
+      node.parent = parent;
+    }
+
+    node.condition = leftOperand;
+    node.question = operator;
+    node.truthyExpression = this._parseExpression(node);
+    node.colon = this._consume(TokenKind.ColonOperator);
+    node.falsyExpression = this._parseExpression(node);
 
     return node;
   }

@@ -52,5 +52,6 @@ NodeKind.ParameterDeclarationNode = "NodeKind.ParameterDeclarationNode";
 NodeKind.CallExpressionNode = "NodeKind.CallExpressionNode";
 NodeKind.ArrayElementAccessExpressionNode =
   "NodeKind.ArrayElementAccessExpressionNode";
+NodeKind.TernaryExpressionNode = "NodeKind.TernaryExpressionNode";
 
 exports.NodeKind = NodeKind;
