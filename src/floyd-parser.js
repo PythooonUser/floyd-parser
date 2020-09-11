@@ -354,6 +354,8 @@ class Parser {
   _isExpressionInitiator(token) {
     switch (token.kind) {
       case TokenKind.Name:
+      case TokenKind.SuperKeyword:
+      case TokenKind.ThisKeyword:
       case TokenKind.NumberLiteral:
       case TokenKind.StringLiteral:
       case TokenKind.PlusOperator:
@@ -482,9 +484,7 @@ class Parser {
   }
 
   _parseClassMember(parent) {
-    const kind = this.token.kind;
-
-    // TODO: Check if we want to declare a property, or a method.
+    return this._parseStatement(parent);
   }
 
   /**
@@ -918,6 +918,8 @@ class Parser {
 
     switch (token.kind) {
       case TokenKind.Name:
+      case TokenKind.SuperKeyword:
+      case TokenKind.ThisKeyword:
         return this._parseVariable(parent);
 
       case TokenKind.NumberLiteral:
@@ -950,7 +952,11 @@ class Parser {
     // TODO: Set kind to Variable in order to be more specific?
 
     // TODO: Allow other reserved keywords here.
-    node.name = this._consume(TokenKind.Name);
+    node.name = this._consumeChoice([
+      TokenKind.Name,
+      TokenKind.SuperKeyword,
+      TokenKind.ThisKeyword
+    ]);
 
     return node;
   }

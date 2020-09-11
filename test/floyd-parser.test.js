@@ -561,6 +561,226 @@ describe("Parser", function () {
 
         assertNodesEqual(actual, expected);
       });
+
+      it("Should handle member declarations", function () {
+        const document = `class Foo { void bar() { this.bar(); super.bar(); } }`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ClassDeclarationNode",
+              error: null,
+              classKeyword: {
+                start: 0,
+                length: 5,
+                kind: "TokenKind.ClassKeyword",
+                error: null
+              },
+              abstractKeyword: null,
+              name: {
+                start: 6,
+                length: 3,
+                kind: "TokenKind.Name",
+                error: null
+              },
+              members: {
+                kind: "NodeKind.ClassMembersNode",
+                error: null,
+                leftBrace: {
+                  start: 10,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                members: [
+                  {
+                    kind: "NodeKind.FunctionDeclarationNode",
+                    error: null,
+                    returnType: {
+                      start: 12,
+                      length: 4,
+                      kind: "TokenKind.VoidKeyword",
+                      error: null
+                    },
+                    name: {
+                      start: 17,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    },
+                    leftParen: {
+                      start: 20,
+                      length: 1,
+                      kind: "TokenKind.LeftParenDelimiter",
+                      error: null
+                    },
+                    arguments: {
+                      kind: "NodeKind.ParameterDeclarationListNode",
+                      error: null,
+                      elements: []
+                    },
+                    rightParen: {
+                      start: 21,
+                      length: 1,
+                      kind: "TokenKind.RightParenDelimiter",
+                      error: null
+                    },
+                    statements: {
+                      kind: "NodeKind.CompoundStatementNode",
+                      error: null,
+                      leftBrace: {
+                        start: 23,
+                        length: 1,
+                        kind: "TokenKind.LeftBraceDelimiter",
+                        error: null
+                      },
+                      statements: [
+                        {
+                          kind: "NodeKind.ExpressionStatementNode",
+                          error: null,
+                          expression: {
+                            kind: "NodeKind.CallExpressionNode",
+                            error: null,
+                            expression: {
+                              kind: "NodeKind.MemberAccessExpressionNode",
+                              error: null,
+                              expression: {
+                                kind: "NodeKind.VariableNode",
+                                error: null,
+                                name: {
+                                  start: 25,
+                                  length: 4,
+                                  kind: "TokenKind.ThisKeyword",
+                                  error: null
+                                }
+                              },
+                              dot: {
+                                start: 29,
+                                length: 1,
+                                kind: "TokenKind.DotOperator",
+                                error: null
+                              },
+                              member: {
+                                start: 30,
+                                length: 3,
+                                kind: "TokenKind.Name",
+                                error: null
+                              }
+                            },
+                            leftParen: {
+                              start: 33,
+                              length: 1,
+                              kind: "TokenKind.LeftParenDelimiter",
+                              error: null
+                            },
+                            arguments: {
+                              kind: "NodeKind.ArgumentExpressionListNode",
+                              error: null,
+                              elements: []
+                            },
+                            rightParen: {
+                              start: 34,
+                              length: 1,
+                              kind: "TokenKind.RightParenDelimiter",
+                              error: null
+                            }
+                          },
+                          semicolon: {
+                            start: 35,
+                            length: 1,
+                            kind: "TokenKind.SemicolonDelimiter",
+                            error: null
+                          }
+                        },
+                        {
+                          kind: "NodeKind.ExpressionStatementNode",
+                          error: null,
+                          expression: {
+                            kind: "NodeKind.CallExpressionNode",
+                            error: null,
+                            expression: {
+                              kind: "NodeKind.MemberAccessExpressionNode",
+                              error: null,
+                              expression: {
+                                kind: "NodeKind.VariableNode",
+                                error: null,
+                                name: {
+                                  start: 37,
+                                  length: 5,
+                                  kind: "TokenKind.SuperKeyword",
+                                  error: null
+                                }
+                              },
+                              dot: {
+                                start: 42,
+                                length: 1,
+                                kind: "TokenKind.DotOperator",
+                                error: null
+                              },
+                              member: {
+                                start: 43,
+                                length: 3,
+                                kind: "TokenKind.Name",
+                                error: null
+                              }
+                            },
+                            leftParen: {
+                              start: 46,
+                              length: 1,
+                              kind: "TokenKind.LeftParenDelimiter",
+                              error: null
+                            },
+                            arguments: {
+                              kind: "NodeKind.ArgumentExpressionListNode",
+                              error: null,
+                              elements: []
+                            },
+                            rightParen: {
+                              start: 47,
+                              length: 1,
+                              kind: "TokenKind.RightParenDelimiter",
+                              error: null
+                            }
+                          },
+                          semicolon: {
+                            start: 48,
+                            length: 1,
+                            kind: "TokenKind.SemicolonDelimiter",
+                            error: null
+                          }
+                        }
+                      ],
+                      rightBrace: {
+                        start: 50,
+                        length: 1,
+                        kind: "TokenKind.RightBraceDelimiter",
+                        error: null
+                      }
+                    }
+                  }
+                ],
+                rightBrace: {
+                  start: 52,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 53,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
     });
 
     describe("Verb Declaration", function () {
