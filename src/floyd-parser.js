@@ -29,6 +29,12 @@ const { CompoundStatementNode } = require("./nodes/compound-statement-node");
 const { IfStatementNode } = require("./nodes/if-statement-node");
 const { ElseClauseNode } = require("./nodes/else-clause-node");
 const { ReturnStatementNode } = require("./nodes/return-statement-node");
+const { SwitchStatementNode } = require("./nodes/switch-statement-node");
+const { CaseStatementNode } = require("./nodes/case-statement-node");
+const { DefaultStatementNode } = require("./nodes/default-statement-node");
+const { BreakStatementNode } = require("./nodes/break-statement-node");
+const { HaltStatementNode } = require("./nodes/halt-statement-node");
+const { QuitStatementNode } = require("./nodes/quit-statement-node");
 
 const {
   UnaryOperatorExpressionNode
@@ -270,7 +276,13 @@ class Parser {
         return false;
       case ParseContext.ClassMembers:
       case ParseContext.BlockStatements:
+      case ParseContext.SwitchStatementElements:
         return kind === TokenKind.RightBraceDelimiter;
+      case ParseContext.CaseStatementElements:
+      case ParseContext.DefaultStatementElements:
+        return (
+          kind === TokenKind.CaseKeyword || kind === TokenKind.DefaultKeyword
+        );
       default:
         throw new ParseContextError(`Unkown parse context '${context}'`);
     }
@@ -285,9 +297,16 @@ class Parser {
     switch (context) {
       case ParseContext.SourceElements:
       case ParseContext.BlockStatements:
+      case ParseContext.CaseStatementElements:
+      case ParseContext.DefaultStatementElements:
         return this._isStatementInitiator(token);
       case ParseContext.ClassMembers:
         return this._isClassMemberDeclarationInitiator(token);
+      case ParseContext.SwitchStatementElements:
+        return (
+          this.token.kind === TokenKind.CaseKeyword ||
+          this.token.kind === TokenKind.DefaultKeyword
+        );
       default:
         throw new ParseContextError(`Unkown parse context '${context}'`);
     }
@@ -308,6 +327,12 @@ class Parser {
       case TokenKind.StringKeyword:
       case TokenKind.ObjectKeyword:
       case TokenKind.VoidKeyword:
+      case TokenKind.SwitchKeyword:
+      case TokenKind.CaseKeyword:
+      case TokenKind.DefaultKeyword:
+      case TokenKind.BreakKeyword:
+      case TokenKind.QuitKeyword:
+      case TokenKind.HaltKeyword:
         return true;
       default:
         return this._isExpressionInitiator(token);
@@ -354,9 +379,13 @@ class Parser {
     switch (context) {
       case ParseContext.SourceElements:
       case ParseContext.BlockStatements:
+      case ParseContext.CaseStatementElements:
+      case ParseContext.DefaultStatementElements:
         return this._parseStatement.bind(this);
       case ParseContext.ClassMembers:
         return this._parseClassMember.bind(this);
+      case ParseContext.SwitchStatementElements:
+        return this._parseSwitchStatementElement.bind(this);
       default:
         throw new ParseContextError(`Unkown parse context '${context}'`);
     }
@@ -381,6 +410,14 @@ class Parser {
         return this._parseIfStatement(parent);
       case TokenKind.ReturnKeyword:
         return this._parseReturnStatement(parent);
+      case TokenKind.SwitchKeyword:
+        return this._parseSwitchStatement(parent);
+      case TokenKind.QuitKeyword:
+        return this._parseQuitStatement(parent);
+      case TokenKind.HaltKeyword:
+        return this._parseHaltStatement(parent);
+      case TokenKind.BreakKeyword:
+        return this._parseBreakStatement(parent);
       default:
         return this._parseExpressionStatement(parent);
     }
@@ -670,6 +707,104 @@ class Parser {
     if (this._isExpressionInitiator(this.token)) {
       node.expression = this._parseExpression(node);
     }
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+
+    return node;
+  }
+
+  _parseSwitchStatement(parent) {
+    let node = new SwitchStatementNode();
+    node.parent = parent;
+
+    node.switchKeyword = this._consume(TokenKind.SwitchKeyword);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.expression = this._parseExpression(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.leftBrace = this._consume(TokenKind.LeftBraceDelimiter);
+    node.statements = this._parseElementList(
+      node,
+      ParseContext.SwitchStatementElements
+    );
+    node.rightBrace = this._consume(TokenKind.RightBraceDelimiter);
+
+    return node;
+  }
+
+  _parseSwitchStatementElement(parent) {
+    switch (this.token.kind) {
+      case TokenKind.CaseKeyword:
+        return this._parseCaseStatement(parent);
+
+      case TokenKind.DefaultKeyword:
+        return this._parseDefaultStatement(parent);
+
+      default:
+        const kind = TokenKind.CaseKeyword;
+        const error = TokenError.MissingToken;
+
+        return new Token(token.start, 0, kind, [], error);
+    }
+  }
+
+  _parseCaseStatement(parent) {
+    let node = new CaseStatementNode();
+    node.parent = parent;
+
+    node.caseKeyword = this._consume(TokenKind.CaseKeyword);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.expression = this._parseExpression(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+    node.statements = this._parseElementList(
+      node,
+      ParseContext.CaseStatementElements
+    );
+
+    return node;
+  }
+
+  _parseDefaultStatement(parent) {
+    let node = new DefaultStatementNode();
+    node.parent = parent;
+
+    node.defaultKeyword = this._consume(TokenKind.DefaultKeyword);
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+    node.statements = this._parseElementList(
+      node,
+      ParseContext.DefaultStatementElements
+    );
+
+    return node;
+  }
+
+  _parseQuitStatement(parent) {
+    let node = new QuitStatementNode();
+    node.parent = parent;
+
+    node.quitKeyword = this._consume(TokenKind.QuitKeyword);
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+
+    return node;
+  }
+
+  _parseHaltStatement(parent) {
+    let node = new HaltStatementNode();
+    node.parent = parent;
+
+    node.haltKeyword = this._consume(TokenKind.HaltKeyword);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.expression = this._parseExpression(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+
+    return node;
+  }
+
+  _parseBreakStatement(parent) {
+    let node = new BreakStatementNode();
+    node.parent = parent;
+
+    node.breakKeyword = this._consume(TokenKind.BreakKeyword);
     node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
 
     return node;

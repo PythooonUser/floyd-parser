@@ -2633,6 +2633,696 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
     });
+
+    describe("Quit Statement", function () {
+      it("Should handle quit statement", function () {
+        const document = `quit;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.QuitStatementNode",
+              error: null,
+              quitKeyword: {
+                start: 0,
+                length: 4,
+                kind: "TokenKind.QuitKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 5,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
+    describe("Switch Statement", function () {
+      it("Should handle switch statement - 01", function () {
+        const document = `switch(foo) { case(bar); break; }`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.SwitchStatementNode",
+              error: null,
+              switchKeyword: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.SwitchKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              expression: {
+                kind: "NodeKind.VariableNode",
+                error: null,
+                name: {
+                  start: 7,
+                  length: 3,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              rightParen: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              leftBrace: {
+                start: 12,
+                length: 1,
+                kind: "TokenKind.LeftBraceDelimiter",
+                error: null
+              },
+              statements: [
+                {
+                  kind: "NodeKind.CaseStatementNode",
+                  error: null,
+                  caseKeyword: {
+                    start: 14,
+                    length: 4,
+                    kind: "TokenKind.CaseKeyword",
+                    error: null
+                  },
+                  leftParen: {
+                    start: 18,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 19,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  rightParen: {
+                    start: 22,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  },
+                  semicolon: {
+                    start: 23,
+                    length: 1,
+                    kind: "TokenKind.SemicolonDelimiter",
+                    error: null
+                  },
+                  statements: [
+                    {
+                      kind: "NodeKind.BreakStatementNode",
+                      error: null,
+                      breakKeyword: {
+                        start: 25,
+                        length: 5,
+                        kind: "TokenKind.BreakKeyword",
+                        error: null
+                      },
+                      semicolon: {
+                        start: 30,
+                        length: 1,
+                        kind: "TokenKind.SemicolonDelimiter",
+                        error: null
+                      }
+                    }
+                  ]
+                }
+              ],
+              rightBrace: {
+                start: 32,
+                length: 1,
+                kind: "TokenKind.RightBraceDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 33,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle switch statement - 02", function () {
+        const document = `switch(foo) { case(bar); case(baz); baz; break; }`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.SwitchStatementNode",
+              error: null,
+              switchKeyword: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.SwitchKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              expression: {
+                kind: "NodeKind.VariableNode",
+                error: null,
+                name: {
+                  start: 7,
+                  length: 3,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              rightParen: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              leftBrace: {
+                start: 12,
+                length: 1,
+                kind: "TokenKind.LeftBraceDelimiter",
+                error: null
+              },
+              statements: [
+                {
+                  kind: "NodeKind.CaseStatementNode",
+                  error: null,
+                  caseKeyword: {
+                    start: 14,
+                    length: 4,
+                    kind: "TokenKind.CaseKeyword",
+                    error: null
+                  },
+                  leftParen: {
+                    start: 18,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 19,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  rightParen: {
+                    start: 22,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  },
+                  semicolon: {
+                    start: 23,
+                    length: 1,
+                    kind: "TokenKind.SemicolonDelimiter",
+                    error: null
+                  },
+                  statements: []
+                },
+                {
+                  kind: "NodeKind.CaseStatementNode",
+                  error: null,
+                  caseKeyword: {
+                    start: 25,
+                    length: 4,
+                    kind: "TokenKind.CaseKeyword",
+                    error: null
+                  },
+                  leftParen: {
+                    start: 29,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 30,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  rightParen: {
+                    start: 33,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  },
+                  semicolon: {
+                    start: 34,
+                    length: 1,
+                    kind: "TokenKind.SemicolonDelimiter",
+                    error: null
+                  },
+                  statements: [
+                    {
+                      kind: "NodeKind.ExpressionStatementNode",
+                      error: null,
+                      expression: {
+                        kind: "NodeKind.VariableNode",
+                        error: null,
+                        name: {
+                          start: 36,
+                          length: 3,
+                          kind: "TokenKind.Name",
+                          error: null
+                        }
+                      },
+                      semicolon: {
+                        start: 39,
+                        length: 1,
+                        kind: "TokenKind.SemicolonDelimiter",
+                        error: null
+                      }
+                    },
+                    {
+                      kind: "NodeKind.BreakStatementNode",
+                      error: null,
+                      breakKeyword: {
+                        start: 41,
+                        length: 5,
+                        kind: "TokenKind.BreakKeyword",
+                        error: null
+                      },
+                      semicolon: {
+                        start: 46,
+                        length: 1,
+                        kind: "TokenKind.SemicolonDelimiter",
+                        error: null
+                      }
+                    }
+                  ]
+                }
+              ],
+              rightBrace: {
+                start: 48,
+                length: 1,
+                kind: "TokenKind.RightBraceDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 49,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle switch statement - 03", function () {
+        const document = `switch(foo) { case(bar); break; default; break; }`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.SwitchStatementNode",
+              error: null,
+              switchKeyword: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.SwitchKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              expression: {
+                kind: "NodeKind.VariableNode",
+                error: null,
+                name: {
+                  start: 7,
+                  length: 3,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              rightParen: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              leftBrace: {
+                start: 12,
+                length: 1,
+                kind: "TokenKind.LeftBraceDelimiter",
+                error: null
+              },
+              statements: [
+                {
+                  kind: "NodeKind.CaseStatementNode",
+                  error: null,
+                  caseKeyword: {
+                    start: 14,
+                    length: 4,
+                    kind: "TokenKind.CaseKeyword",
+                    error: null
+                  },
+                  leftParen: {
+                    start: 18,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 19,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  rightParen: {
+                    start: 22,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  },
+                  semicolon: {
+                    start: 23,
+                    length: 1,
+                    kind: "TokenKind.SemicolonDelimiter",
+                    error: null
+                  },
+                  statements: [
+                    {
+                      kind: "NodeKind.BreakStatementNode",
+                      error: null,
+                      breakKeyword: {
+                        start: 25,
+                        length: 5,
+                        kind: "TokenKind.BreakKeyword",
+                        error: null
+                      },
+                      semicolon: {
+                        start: 30,
+                        length: 1,
+                        kind: "TokenKind.SemicolonDelimiter",
+                        error: null
+                      }
+                    }
+                  ]
+                },
+                {
+                  kind: "NodeKind.DefaultStatementNode",
+                  error: null,
+                  defaultKeyword: {
+                    start: 32,
+                    length: 7,
+                    kind: "TokenKind.DefaultKeyword",
+                    error: null
+                  },
+                  semicolon: {
+                    start: 39,
+                    length: 1,
+                    kind: "TokenKind.SemicolonDelimiter",
+                    error: null
+                  },
+                  statements: [
+                    {
+                      kind: "NodeKind.BreakStatementNode",
+                      error: null,
+                      breakKeyword: {
+                        start: 41,
+                        length: 5,
+                        kind: "TokenKind.BreakKeyword",
+                        error: null
+                      },
+                      semicolon: {
+                        start: 46,
+                        length: 1,
+                        kind: "TokenKind.SemicolonDelimiter",
+                        error: null
+                      }
+                    }
+                  ]
+                }
+              ],
+              rightBrace: {
+                start: 48,
+                length: 1,
+                kind: "TokenKind.RightBraceDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 49,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle switch statement - 04", function () {
+        const document = `switch(foo) { case(bar); break; halt(0); return 1; }`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.SwitchStatementNode",
+              error: null,
+              switchKeyword: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.SwitchKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              expression: {
+                kind: "NodeKind.VariableNode",
+                error: null,
+                name: {
+                  start: 7,
+                  length: 3,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              rightParen: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              leftBrace: {
+                start: 12,
+                length: 1,
+                kind: "TokenKind.LeftBraceDelimiter",
+                error: null
+              },
+              statements: [
+                {
+                  kind: "NodeKind.CaseStatementNode",
+                  error: null,
+                  caseKeyword: {
+                    start: 14,
+                    length: 4,
+                    kind: "TokenKind.CaseKeyword",
+                    error: null
+                  },
+                  leftParen: {
+                    start: 18,
+                    length: 1,
+                    kind: "TokenKind.LeftParenDelimiter",
+                    error: null
+                  },
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 19,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  rightParen: {
+                    start: 22,
+                    length: 1,
+                    kind: "TokenKind.RightParenDelimiter",
+                    error: null
+                  },
+                  semicolon: {
+                    start: 23,
+                    length: 1,
+                    kind: "TokenKind.SemicolonDelimiter",
+                    error: null
+                  },
+                  statements: [
+                    {
+                      kind: "NodeKind.BreakStatementNode",
+                      error: null,
+                      breakKeyword: {
+                        start: 25,
+                        length: 5,
+                        kind: "TokenKind.BreakKeyword",
+                        error: null
+                      },
+                      semicolon: {
+                        start: 30,
+                        length: 1,
+                        kind: "TokenKind.SemicolonDelimiter",
+                        error: null
+                      }
+                    },
+                    {
+                      kind: "NodeKind.HaltStatementNode",
+                      error: null,
+                      haltKeyword: {
+                        start: 32,
+                        length: 4,
+                        kind: "TokenKind.HaltKeyword",
+                        error: null
+                      },
+                      leftParen: {
+                        start: 36,
+                        length: 1,
+                        kind: "TokenKind.LeftParenDelimiter",
+                        error: null
+                      },
+                      expression: {
+                        kind: "NodeKind.NumberLiteralNode",
+                        error: null,
+                        literal: {
+                          start: 37,
+                          length: 1,
+                          kind: "TokenKind.NumberLiteral",
+                          error: null
+                        }
+                      },
+                      rightParen: {
+                        start: 38,
+                        length: 1,
+                        kind: "TokenKind.RightParenDelimiter",
+                        error: null
+                      },
+                      semicolon: {
+                        start: 39,
+                        length: 1,
+                        kind: "TokenKind.SemicolonDelimiter",
+                        error: null
+                      }
+                    },
+                    {
+                      kind: "NodeKind.ReturnStatementNode",
+                      error: null,
+                      returnKeyword: {
+                        start: 41,
+                        length: 6,
+                        kind: "TokenKind.ReturnKeyword",
+                        error: null
+                      },
+                      expression: {
+                        kind: "NodeKind.NumberLiteralNode",
+                        error: null,
+                        literal: {
+                          start: 48,
+                          length: 1,
+                          kind: "TokenKind.NumberLiteral",
+                          error: null
+                        }
+                      },
+                      semicolon: {
+                        start: 49,
+                        length: 1,
+                        kind: "TokenKind.SemicolonDelimiter",
+                        error: null
+                      }
+                    }
+                  ]
+                }
+              ],
+              rightBrace: {
+                start: 51,
+                length: 1,
+                kind: "TokenKind.RightBraceDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 52,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
   });
 
   describe("Expressions", function () {

@@ -23,6 +23,12 @@ NodeKind.ArrayDeclarationClauseNode = "NodeKind.ArrayDeclarationClauseNode";
 NodeKind.VariableInitializationClauseNode =
   "NodeKind.VariableInitializationClauseNode";
 NodeKind.ArrayLiteralNode = "NodeKind.ArrayLiteralNode";
+NodeKind.SwitchStatementNode = "NodeKind.SwitchStatementNode";
+NodeKind.CaseStatementNode = "NodeKind.CaseStatementNode";
+NodeKind.DefaultStatementNode = "NodeKind.DefaultStatementNode";
+NodeKind.QuitStatementNode = "NodeKind.QuitStatementNode";
+NodeKind.HaltStatementNode = "NodeKind.HaltStatementNode";
+NodeKind.BreakStatementNode = "NodeKind.BreakStatementNode";
 
 // Expression Nodes
 NodeKind.UnaryOperatorExpressionNode = "NodeKind.UnaryOperatorExpressionNode";
