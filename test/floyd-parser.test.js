@@ -1165,6 +1165,609 @@ describe("Parser", function () {
       });
     });
 
+    describe("Variable Declaration", function () {
+      it("Should handle variable declaration - 01", function () {
+        const document = `int a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VariableDeclarationListNode",
+              error: null,
+              elements: [
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: null,
+                  variableInitializationClause: null
+                }
+              ],
+              type: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle variable declaration - 02", function () {
+        const document = `string a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VariableDeclarationListNode",
+              error: null,
+              elements: [
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 7,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: null,
+                  variableInitializationClause: null
+                }
+              ],
+              type: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.StringKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 9,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle variable declaration - 03", function () {
+        const document = `object a;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VariableDeclarationListNode",
+              error: null,
+              elements: [
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 7,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: null,
+                  variableInitializationClause: null
+                }
+              ],
+              type: {
+                start: 0,
+                length: 6,
+                kind: "TokenKind.ObjectKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 9,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it.skip("Should handle variable declaration - 04", function () {
+        const document = `foo a;`;
+
+        const expected = {};
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle variable declaration - 05", function () {
+        const document = `int a, b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VariableDeclarationListNode",
+              error: null,
+              elements: [
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: null,
+                  variableInitializationClause: null
+                },
+                {
+                  start: 5,
+                  length: 1,
+                  kind: "TokenKind.CommaDelimiter",
+                  error: null
+                },
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 7,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: null,
+                  variableInitializationClause: null
+                }
+              ],
+              type: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 9,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle variable declaration - 06", function () {
+        const document = `int a = 0;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VariableDeclarationListNode",
+              error: null,
+              elements: [
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: null,
+                  variableInitializationClause: {
+                    kind: "NodeKind.VariableInitializationClauseNode",
+                    error: null,
+                    equals: {
+                      start: 6,
+                      length: 1,
+                      kind: "TokenKind.EqualsOperator",
+                      error: null
+                    },
+                    expression: {
+                      kind: "NodeKind.NumberLiteralNode",
+                      error: null,
+                      literal: {
+                        start: 8,
+                        length: 1,
+                        kind: "TokenKind.NumberLiteral",
+                        error: null
+                      }
+                    }
+                  }
+                }
+              ],
+              type: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 9,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 10,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle variable declaration - 07", function () {
+        const document = `int a = 0, b;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VariableDeclarationListNode",
+              error: null,
+              elements: [
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: null,
+                  variableInitializationClause: {
+                    kind: "NodeKind.VariableInitializationClauseNode",
+                    error: null,
+                    equals: {
+                      start: 6,
+                      length: 1,
+                      kind: "TokenKind.EqualsOperator",
+                      error: null
+                    },
+                    expression: {
+                      kind: "NodeKind.NumberLiteralNode",
+                      error: null,
+                      literal: {
+                        start: 8,
+                        length: 1,
+                        kind: "TokenKind.NumberLiteral",
+                        error: null
+                      }
+                    }
+                  }
+                },
+                {
+                  start: 9,
+                  length: 1,
+                  kind: "TokenKind.CommaDelimiter",
+                  error: null
+                },
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 11,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: null,
+                  variableInitializationClause: null
+                }
+              ],
+              type: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 12,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 13,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle variable declaration - 08", function () {
+        const document = `int a[2] = (1, 1);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VariableDeclarationListNode",
+              error: null,
+              elements: [
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: {
+                    kind: "NodeKind.ArrayDeclarationClauseNode",
+                    error: null,
+                    leftBracket: {
+                      start: 5,
+                      length: 1,
+                      kind: "TokenKind.LeftBracketDelimiter",
+                      error: null
+                    },
+                    length: {
+                      kind: "NodeKind.NumberLiteralNode",
+                      error: null,
+                      literal: {
+                        start: 6,
+                        length: 1,
+                        kind: "TokenKind.NumberLiteral",
+                        error: null
+                      }
+                    },
+                    rightBracket: {
+                      start: 7,
+                      length: 1,
+                      kind: "TokenKind.RightBracketDelimiter",
+                      error: null
+                    }
+                  },
+                  variableInitializationClause: {
+                    kind: "NodeKind.VariableInitializationClauseNode",
+                    error: null,
+                    equals: {
+                      start: 9,
+                      length: 1,
+                      kind: "TokenKind.EqualsOperator",
+                      error: null
+                    },
+                    expression: {
+                      kind: "NodeKind.ArrayLiteralNode",
+                      error: null,
+                      elements: [
+                        {
+                          kind: "NodeKind.NumberLiteralNode",
+                          error: null,
+                          literal: {
+                            start: 12,
+                            length: 1,
+                            kind: "TokenKind.NumberLiteral",
+                            error: null
+                          }
+                        },
+                        {
+                          start: 13,
+                          length: 1,
+                          kind: "TokenKind.CommaDelimiter",
+                          error: null
+                        },
+                        {
+                          kind: "NodeKind.NumberLiteralNode",
+                          error: null,
+                          literal: {
+                            start: 15,
+                            length: 1,
+                            kind: "TokenKind.NumberLiteral",
+                            error: null
+                          }
+                        }
+                      ],
+                      leftParen: {
+                        start: 11,
+                        length: 1,
+                        kind: "TokenKind.LeftParenDelimiter",
+                        error: null
+                      },
+                      rightParen: {
+                        start: 16,
+                        length: 1,
+                        kind: "TokenKind.RightParenDelimiter",
+                        error: null
+                      }
+                    }
+                  }
+                }
+              ],
+              type: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 17,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 18,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle variable declaration - 09", function () {
+        const document = `int a[];`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.VariableDeclarationListNode",
+              error: null,
+              elements: [
+                {
+                  kind: "NodeKind.VariableDeclarationNode",
+                  error: null,
+                  name: {
+                    start: 4,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  },
+                  arrayDeclarationClause: {
+                    kind: "NodeKind.ArrayDeclarationClauseNode",
+                    error: null,
+                    leftBracket: {
+                      start: 5,
+                      length: 1,
+                      kind: "TokenKind.LeftBracketDelimiter",
+                      error: null
+                    },
+                    length: {
+                      start: 6,
+                      length: 0,
+                      kind: "TokenKind.ArrayLength",
+                      error: "TokenError.MissingToken"
+                    },
+                    rightBracket: {
+                      start: 6,
+                      length: 1,
+                      kind: "TokenKind.RightBracketDelimiter",
+                      error: null
+                    }
+                  },
+                  variableInitializationClause: null
+                }
+              ],
+              type: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.IntKeyword",
+                error: null
+              },
+              semicolon: {
+                start: 7,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 8,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it.skip("Should handle variable declaration - 10", function () {
+        const document = `int a[0];`;
+
+        const expected = {};
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
     describe("If-Else Statement", function () {
       it("Should handle if statement - 01", function () {
         const document = `if() {}`;

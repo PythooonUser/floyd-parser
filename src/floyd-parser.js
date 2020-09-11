@@ -60,6 +60,19 @@ const { CallExpressionNode } = require("./nodes/call-expression-node");
 const {
   ArrayElementAccessExpressionNode
 } = require("./nodes/array-element-access-expression-node");
+const {
+  VariableDeclarationListNode
+} = require("./nodes/variable-declaration-list-node");
+const {
+  VariableDeclarationNode
+} = require("./nodes/variable-declaration-node");
+const {
+  ArrayDeclarationClauseNode
+} = require("./nodes/array-declaration-clause-node");
+const { ArrayLiteralNode } = require("./nodes/array-literal-node");
+const {
+  VariableInitializationClauseNode
+} = require("./nodes/variable-initialization-clause-node");
 
 /** Generates an abstract syntax tree from a source document. */
 class Parser {
@@ -472,7 +485,7 @@ class Parser {
     if (delimiter.kind === TokenKind.LeftParenDelimiter) {
       return this._parseFunctionDeclaration(parent);
     } else {
-      return this._parseVariableDeclaration(parent);
+      return this._parseVariableDeclarationList(parent);
     }
   }
 
@@ -495,7 +508,131 @@ class Parser {
     return node;
   }
 
-  _parseVariableDeclaration(parent) {}
+  _parseVariableDeclarationList(parent) {
+    let node = new VariableDeclarationListNode();
+    node.parent = parent;
+
+    // TODO: Allow also reserved words, but emit an error when doing so.
+    node.type = this._consumeChoice([
+      TokenKind.IntKeyword,
+      TokenKind.StringKeyword,
+      TokenKind.ObjectKeyword
+    ]);
+
+    while (true) {
+      const token = this.token;
+
+      if (token.kind !== TokenKind.Name) {
+        break;
+      }
+
+      const element = this._parseVariableDeclaration(node);
+      node.addElement(element);
+
+      const delimiter = this._consumeOptional(TokenKind.CommaDelimiter);
+      if (!delimiter) {
+        // TODO: Handle case where no delimiter, but another parameter declaration is following.
+        break;
+      }
+
+      node.addElement(delimiter);
+    }
+
+    // TODO: Emit error when no variable defined.
+    // if (node.elements.length === 0) {
+    // }
+
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+
+    return node;
+  }
+
+  _parseVariableDeclaration(parent) {
+    let node = new VariableDeclarationNode();
+    node.parent = parent;
+
+    // TODO: Allow also reserved words, but emit an error when doing so.
+    // TODO: Return null when no name given. This will abort the VariableDeclarationList parsing and emit an error.
+    node.name = this._consume(TokenKind.Name);
+
+    if (this.token.kind === TokenKind.LeftBracketDelimiter) {
+      node.arrayDeclarationClause = this._parseArrayDeclarationClause(node);
+    }
+
+    if (this.token.kind === TokenKind.EqualsOperator) {
+      node.variableInitializationClause = this._parseVariableInitializationClause(
+        node
+      );
+    }
+
+    return node;
+  }
+
+  _parseArrayDeclarationClause(parent) {
+    let node = new ArrayDeclarationClauseNode();
+    node.parent = parent;
+
+    node.leftBracket = this._consume(TokenKind.LeftBracketDelimiter);
+
+    let length = this._parseExpression(node);
+    // TODO: Could be simplified using a MissingToken instead.
+    if (length instanceof Token && length.error === TokenError.MissingToken) {
+      length.kind = TokenKind.ArrayLength;
+    }
+    node.length = length;
+    node.rightBracket = this._consume(TokenKind.RightBracketDelimiter);
+
+    return node;
+  }
+
+  /**
+   *
+   * @param {VariableDeclarationNode} parent
+   */
+  _parseVariableInitializationClause(parent) {
+    let node = new VariableInitializationClauseNode();
+    node.parent = parent;
+
+    node.equals = this._consume(TokenKind.EqualsOperator);
+
+    if (parent.arrayDeclarationClause) {
+      node.expression = this._parseArrayLiteral(node);
+    } else {
+      node.expression = this._parseExpression(node);
+    }
+
+    return node;
+  }
+
+  _parseArrayLiteral(parent) {
+    let node = new ArrayLiteralNode();
+    node.parent = parent;
+
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+
+    while (true) {
+      let token = this.token;
+
+      if (!this._isExpressionInitiator(token)) {
+        break;
+      }
+
+      const element = this._parseExpression(node);
+      node.addElement(element);
+
+      const delimiter = this._consumeOptional(TokenKind.CommaDelimiter);
+      if (!delimiter) {
+        // TODO: Handle case where no delimiter, but another argument is following.
+        break;
+      }
+
+      node.addElement(delimiter);
+    }
+
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+
+    return node;
+  }
 
   _parseIfStatement(parent) {
     let node = new IfStatementNode();

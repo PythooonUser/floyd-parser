@@ -17,6 +17,12 @@ NodeKind.CompoundStatementNode = "NodeKind.CompoundStatementNode";
 NodeKind.IfStatementNode = "NodeKind.IfStatementNode";
 NodeKind.ElseClauseNode = "NodeKind.ElseClauseNode";
 NodeKind.ReturnStatementNode = "NodeKind.ReturnStatementNode";
+NodeKind.VariableDeclarationListNode = "NodeKind.VariableDeclarationListNode";
+NodeKind.VariableDeclarationNode = "NodeKind.VariableDeclarationNode";
+NodeKind.ArrayDeclarationClauseNode = "NodeKind.ArrayDeclarationClauseNode";
+NodeKind.VariableInitializationClauseNode =
+  "NodeKind.VariableInitializationClauseNode";
+NodeKind.ArrayLiteralNode = "NodeKind.ArrayLiteralNode";
 
 // Expression Nodes
 NodeKind.UnaryOperatorExpressionNode = "NodeKind.UnaryOperatorExpressionNode";
