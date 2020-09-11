@@ -4322,6 +4322,57 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
 
+      it("Should handle increment expression - 07", function () {
+        const document = `a++;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PostfixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 1,
+                  length: 2,
+                  kind: "TokenKind.PlusPlusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 3,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 4,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
       it("Should handle decrement expression - 01", function () {
         const document = `--a;`;
 
@@ -4665,6 +4716,57 @@ describe("Parser", function () {
           ],
           endOfFile: {
             start: 6,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle decrement expression - 07", function () {
+        const document = `a--;`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.PostfixUpdateExpressionNode",
+                error: null,
+                operand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 1,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 1,
+                  length: 2,
+                  kind: "TokenKind.MinusMinusOperator",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 3,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 4,
             length: 0,
             kind: "TokenKind.EndOfFile",
             error: null

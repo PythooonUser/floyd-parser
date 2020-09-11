@@ -53,5 +53,6 @@ NodeKind.CallExpressionNode = "NodeKind.CallExpressionNode";
 NodeKind.ArrayElementAccessExpressionNode =
   "NodeKind.ArrayElementAccessExpressionNode";
 NodeKind.TernaryExpressionNode = "NodeKind.TernaryExpressionNode";
+NodeKind.PostfixUpdateExpressionNode = "NodeKind.PostfixUpdateExpressionNode";
 
 exports.NodeKind = NodeKind;

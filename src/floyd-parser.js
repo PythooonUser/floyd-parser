@@ -84,6 +84,9 @@ const {
   VariableInitializationClauseNode
 } = require("./nodes/variable-initialization-clause-node");
 const { TernaryExpressionNode } = require("./nodes/ternary-expression-node");
+const {
+  PostfixUpdateExpressionNode
+} = require("./nodes/postfix-update-expression-node");
 
 /** Generates an abstract syntax tree from a source document. */
 class Parser {
@@ -1126,10 +1129,28 @@ class Parser {
     return node;
   }
 
+  _parsePostfixUpdateExpression(expression) {
+    let node = new PostfixUpdateExpressionNode();
+    node.parent = expression.parent;
+    expression.parent = node;
+
+    node.operand = expression;
+    node.operator = this._consumeChoice([
+      TokenKind.PlusPlusOperator,
+      TokenKind.MinusMinusOperator
+    ]);
+
+    return node;
+  }
+
   _parsePostfixExpression(expression) {
     const token = this.token;
 
     switch (token.kind) {
+      case TokenKind.PlusPlusOperator:
+      case TokenKind.MinusMinusOperator:
+        return this._parsePostfixUpdateExpression(expression);
+
       case TokenKind.DotOperator:
         const memberAccessExpression = this._parseMemberAccess(expression);
         return this._parsePostfixExpression(memberAccessExpression);
