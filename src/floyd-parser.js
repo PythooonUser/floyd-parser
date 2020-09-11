@@ -36,6 +36,7 @@ const { DefaultStatementNode } = require("./nodes/default-statement-node");
 const { BreakStatementNode } = require("./nodes/break-statement-node");
 const { HaltStatementNode } = require("./nodes/halt-statement-node");
 const { QuitStatementNode } = require("./nodes/quit-statement-node");
+const { ForStatementNode } = require("./nodes/for-statement-node");
 
 const {
   UnaryOperatorExpressionNode
@@ -335,6 +336,7 @@ class Parser {
       case TokenKind.BreakKeyword:
       case TokenKind.QuitKeyword:
       case TokenKind.HaltKeyword:
+      case TokenKind.ForKeyword:
         return true;
       default:
         return this._isExpressionInitiator(token);
@@ -422,6 +424,8 @@ class Parser {
         return this._parseHaltStatement(parent);
       case TokenKind.BreakKeyword:
         return this._parseBreakStatement(parent);
+      case TokenKind.ForKeyword:
+        return this._parseForStatement(parent);
       default:
         return this._parseExpressionStatement(parent);
     }
@@ -507,6 +511,23 @@ class Parser {
     node.condition = this._parseExpression(node);
     node.rightParen = this._consume(TokenKind.RightParenDelimiter);
     node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
+
+    return node;
+  }
+
+  _parseForStatement(parent) {
+    let node = new ForStatementNode();
+    node.parent = parent;
+
+    node.forKeyword = this._consume(TokenKind.ForKeyword);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.initializer = this._parseExpression(node);
+    node.semicolon1 = this._consume(TokenKind.SemicolonDelimiter);
+    node.condition = this._parseExpression(node);
+    node.semicolon2 = this._consume(TokenKind.SemicolonDelimiter);
+    node.increment = this._parseExpression(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.statements = this._parseCompoundStatement(node);
 
     return node;
   }

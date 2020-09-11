@@ -30,6 +30,7 @@ NodeKind.DefaultStatementNode = "NodeKind.DefaultStatementNode";
 NodeKind.QuitStatementNode = "NodeKind.QuitStatementNode";
 NodeKind.HaltStatementNode = "NodeKind.HaltStatementNode";
 NodeKind.BreakStatementNode = "NodeKind.BreakStatementNode";
+NodeKind.ForStatementNode = "NodeKind.ForStatementNode";
 
 // Expression Nodes
 NodeKind.UnaryOperatorExpressionNode = "NodeKind.UnaryOperatorExpressionNode";

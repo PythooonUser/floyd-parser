@@ -2829,6 +2829,260 @@ describe("Parser", function () {
       });
     });
 
+    describe("For Statement", function () {
+      it("Should handle for statement - 01", function () {
+        const document = `for(;;) {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ForStatementNode",
+              error: null,
+              forKeyword: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.ForKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 3,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              initializer: {
+                start: 4,
+                length: 0,
+                kind: "TokenKind.Expression",
+                error: "TokenError.MissingToken"
+              },
+              semicolon1: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              },
+              condition: {
+                start: 5,
+                length: 0,
+                kind: "TokenKind.Expression",
+                error: "TokenError.MissingToken"
+              },
+              semicolon2: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              },
+              increment: {
+                start: 6,
+                length: 0,
+                kind: "TokenKind.Expression",
+                error: "TokenError.MissingToken"
+              },
+              rightParen: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 8,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 9,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 10,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle for statement - 02", function () {
+        const document = `for (foo = 0; foo < 3; foo += 1) {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ForStatementNode",
+              error: null,
+              forKeyword: {
+                start: 0,
+                length: 3,
+                kind: "TokenKind.ForKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 4,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              initializer: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 5,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 9,
+                  length: 1,
+                  kind: "TokenKind.EqualsOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.NumberLiteralNode",
+                  error: null,
+                  literal: {
+                    start: 11,
+                    length: 1,
+                    kind: "TokenKind.NumberLiteral",
+                    error: null
+                  }
+                }
+              },
+              semicolon1: {
+                start: 12,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              },
+              condition: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 14,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 18,
+                  length: 1,
+                  kind: "TokenKind.LessThanOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.NumberLiteralNode",
+                  error: null,
+                  literal: {
+                    start: 20,
+                    length: 1,
+                    kind: "TokenKind.NumberLiteral",
+                    error: null
+                  }
+                }
+              },
+              semicolon2: {
+                start: 21,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              },
+              increment: {
+                kind: "NodeKind.BinaryExpressionNode",
+                error: null,
+                leftOperand: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 23,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                operator: {
+                  start: 27,
+                  length: 2,
+                  kind: "TokenKind.PlusEqualsOperator",
+                  error: null
+                },
+                rightOperand: {
+                  kind: "NodeKind.NumberLiteralNode",
+                  error: null,
+                  literal: {
+                    start: 30,
+                    length: 1,
+                    kind: "TokenKind.NumberLiteral",
+                    error: null
+                  }
+                }
+              },
+              rightParen: {
+                start: 31,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 33,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 34,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 35,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
     describe("Switch Statement", function () {
       it("Should handle switch statement - 01", function () {
         const document = `switch(foo) { case(bar); break; }`;
