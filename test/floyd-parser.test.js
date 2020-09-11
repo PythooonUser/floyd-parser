@@ -3083,6 +3083,237 @@ describe("Parser", function () {
       });
     });
 
+    describe("Fetch Statement", function () {
+      it("Should handle fetch statement - 01", function () {
+        const document = `fetch(,,) {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FetchStatementNode",
+              error: null,
+              fetchKeyword: {
+                start: 0,
+                length: 5,
+                kind: "TokenKind.FetchKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              variable: {
+                start: 6,
+                length: 0,
+                kind: "TokenKind.Expression",
+                error: "TokenError.MissingToken"
+              },
+              comma1: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.CommaDelimiter",
+                error: null
+              },
+              expression: {
+                start: 7,
+                length: 0,
+                kind: "TokenKind.Expression",
+                error: "TokenError.MissingToken"
+              },
+              comma2: {
+                start: 7,
+                length: 1,
+                kind: "TokenKind.CommaDelimiter",
+                error: null
+              },
+              reach: {
+                start: 8,
+                length: 0,
+                kind: "TokenKind.Expression",
+                error: "TokenError.MissingToken"
+              },
+              rightParen: {
+                start: 8,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 10,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 11,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 12,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
+      it("Should handle for statement - 02", function () {
+        const document = `fetch (foo, foo.bar(), 0) {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.FetchStatementNode",
+              error: null,
+              fetchKeyword: {
+                start: 0,
+                length: 5,
+                kind: "TokenKind.FetchKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 6,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              variable: {
+                kind: "NodeKind.VariableNode",
+                error: null,
+                name: {
+                  start: 7,
+                  length: 3,
+                  kind: "TokenKind.Name",
+                  error: null
+                }
+              },
+              comma1: {
+                start: 10,
+                length: 1,
+                kind: "TokenKind.CommaDelimiter",
+                error: null
+              },
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.MemberAccessExpressionNode",
+                  error: null,
+                  expression: {
+                    kind: "NodeKind.VariableNode",
+                    error: null,
+                    name: {
+                      start: 12,
+                      length: 3,
+                      kind: "TokenKind.Name",
+                      error: null
+                    }
+                  },
+                  dot: {
+                    start: 15,
+                    length: 1,
+                    kind: "TokenKind.DotOperator",
+                    error: null
+                  },
+                  member: {
+                    start: 16,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 19,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: []
+                },
+                rightParen: {
+                  start: 20,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              comma2: {
+                start: 21,
+                length: 1,
+                kind: "TokenKind.CommaDelimiter",
+                error: null
+              },
+              reach: {
+                kind: "NodeKind.NumberLiteralNode",
+                error: null,
+                literal: {
+                  start: 23,
+                  length: 1,
+                  kind: "TokenKind.NumberLiteral",
+                  error: null
+                }
+              },
+              rightParen: {
+                start: 24,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 26,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 27,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 28,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
     describe("Switch Statement", function () {
       it("Should handle switch statement - 01", function () {
         const document = `switch(foo) { case(bar); break; }`;

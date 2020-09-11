@@ -31,6 +31,7 @@ NodeKind.QuitStatementNode = "NodeKind.QuitStatementNode";
 NodeKind.HaltStatementNode = "NodeKind.HaltStatementNode";
 NodeKind.BreakStatementNode = "NodeKind.BreakStatementNode";
 NodeKind.ForStatementNode = "NodeKind.ForStatementNode";
+NodeKind.FetchStatementNode = "NodeKind.FetchStatementNode";
 
 // Expression Nodes
 NodeKind.UnaryOperatorExpressionNode = "NodeKind.UnaryOperatorExpressionNode";

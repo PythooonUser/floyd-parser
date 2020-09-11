@@ -37,6 +37,7 @@ const { BreakStatementNode } = require("./nodes/break-statement-node");
 const { HaltStatementNode } = require("./nodes/halt-statement-node");
 const { QuitStatementNode } = require("./nodes/quit-statement-node");
 const { ForStatementNode } = require("./nodes/for-statement-node");
+const { FetchStatementNode } = require("./nodes/fetch-statement-node");
 
 const {
   UnaryOperatorExpressionNode
@@ -337,6 +338,7 @@ class Parser {
       case TokenKind.QuitKeyword:
       case TokenKind.HaltKeyword:
       case TokenKind.ForKeyword:
+      case TokenKind.FetchKeyword:
         return true;
       default:
         return this._isExpressionInitiator(token);
@@ -426,6 +428,8 @@ class Parser {
         return this._parseBreakStatement(parent);
       case TokenKind.ForKeyword:
         return this._parseForStatement(parent);
+      case TokenKind.FetchKeyword:
+        return this._parseFetchStatement(parent);
       default:
         return this._parseExpressionStatement(parent);
     }
@@ -526,6 +530,23 @@ class Parser {
     node.condition = this._parseExpression(node);
     node.semicolon2 = this._consume(TokenKind.SemicolonDelimiter);
     node.increment = this._parseExpression(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.statements = this._parseCompoundStatement(node);
+
+    return node;
+  }
+
+  _parseFetchStatement(parent) {
+    let node = new FetchStatementNode();
+    node.parent = parent;
+
+    node.fetchKeyword = this._consume(TokenKind.FetchKeyword);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.variable = this._parseExpression(node);
+    node.comma1 = this._consume(TokenKind.CommaDelimiter);
+    node.expression = this._parseExpression(node);
+    node.comma2 = this._consume(TokenKind.CommaDelimiter);
+    node.reach = this._parseExpression(node);
     node.rightParen = this._consume(TokenKind.RightParenDelimiter);
     node.statements = this._parseCompoundStatement(node);
 

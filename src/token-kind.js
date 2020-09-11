@@ -48,6 +48,7 @@ TokenKind.ForKeyword = "TokenKind.ForKeyword";
 TokenKind.QuitKeyword = "TokenKind.QuitKeyword";
 TokenKind.SuperKeyword = "TokenKind.SuperKeyword";
 TokenKind.VerbKeyword = "TokenKind.VerbKeyword";
+TokenKind.FetchKeyword = "TokenKind.FetchKeyword";
 
 // Operators
 TokenKind.LessThanLessThanOperator = "TokenKind.LessThanLessThanOperator";
@@ -122,7 +123,8 @@ TokenKind.KeywordTokenMap = {
   for: TokenKind.ForKeyword,
   quit: TokenKind.QuitKeyword,
   super: TokenKind.SuperKeyword,
-  verb: TokenKind.VerbKeyword
+  verb: TokenKind.VerbKeyword,
+  fetch: TokenKind.FetchKeyword
 };
 
 /** Provides a mapping from characters to operator TokenKind objects. */
