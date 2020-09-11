@@ -485,12 +485,9 @@ class Parser {
 
     node.whileKeyword = this._consume(TokenKind.WhileKeyword);
     node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
-    // node.condition = TODO: Parse expression.
+    node.condition = this._parseExpression(node);
     node.rightParen = this._consume(TokenKind.RightParenDelimiter);
-
-    node.leftBrace = this._consume(TokenKind.LeftBraceDelimiter);
-    // node.statements = this._parseStatement(node); TODO: Make this a list?
-    node.rightBrace = this._consume(TokenKind.RightBraceDelimiter);
+    node.statements = this._parseCompoundStatement(node);
 
     return node;
   }

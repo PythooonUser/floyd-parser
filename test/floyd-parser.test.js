@@ -2673,6 +2673,78 @@ describe("Parser", function () {
       });
     });
 
+    describe("While Statement", function () {
+      it("Should handle while statement", function () {
+        const document = `while(0) {}`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.WhileStatementNode",
+              error: null,
+              whileKeyword: {
+                start: 0,
+                length: 5,
+                kind: "TokenKind.WhileKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 5,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              condition: {
+                kind: "NodeKind.NumberLiteralNode",
+                error: null,
+                literal: {
+                  start: 6,
+                  length: 1,
+                  kind: "TokenKind.NumberLiteral",
+                  error: null
+                }
+              },
+              rightParen: {
+                start: 7,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 9,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 10,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              }
+            }
+          ],
+          endOfFile: {
+            start: 11,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
     describe("Switch Statement", function () {
       it("Should handle switch statement - 01", function () {
         const document = `switch(foo) { case(bar); break; }`;

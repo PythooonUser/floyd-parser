@@ -1,8 +1,10 @@
-const { NodeKind } = require("../node-kind");
-const { Node } = require("../node");
 const { Token } = require("../token");
+const { Node } = require("../node");
+const { StatementNode } = require("./statement-node");
+const { CompoundStatementNode } = require("./compound-statement-node");
+const { NodeKind } = require("../node-kind");
 
-class WhileStatementNode extends Node {
+class WhileStatementNode extends StatementNode {
   constructor() {
     super();
 
@@ -10,18 +12,18 @@ class WhileStatementNode extends Node {
 
     /** @type {Token} */
     this.whileKeyword = null;
+
     /** @type {Token} */
     this.leftParen = null;
-    /** @type {Node|Token} */
+
+    /** @type {Token|Node} */
     this.condition = null;
+
     /** @type {Token} */
     this.rightParen = null;
-    /** @type {Token} */
-    this.leftBrace = null;
-    /** @type {(Token|Node)[]} */
-    this.statements = [];
-    /** @type {Token} */
-    this.rightBrace = null;
+
+    /** @type {Token|CompoundStatementNode} */
+    this.statements = null;
   }
 }
 
