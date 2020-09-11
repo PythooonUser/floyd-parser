@@ -2745,6 +2745,90 @@ describe("Parser", function () {
       });
     });
 
+    describe("Do Statement", function () {
+      it("Should handle do statement", function () {
+        const document = `do {} while(0);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.DoStatementNode",
+              error: null,
+              doKeyword: {
+                start: 0,
+                length: 2,
+                kind: "TokenKind.DoKeyword",
+                error: null
+              },
+              statements: {
+                kind: "NodeKind.CompoundStatementNode",
+                error: null,
+                leftBrace: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftBraceDelimiter",
+                  error: null
+                },
+                statements: [],
+                rightBrace: {
+                  start: 4,
+                  length: 1,
+                  kind: "TokenKind.RightBraceDelimiter",
+                  error: null
+                }
+              },
+              whileKeyword: {
+                start: 6,
+                length: 5,
+                kind: "TokenKind.WhileKeyword",
+                error: null
+              },
+              leftParen: {
+                start: 11,
+                length: 1,
+                kind: "TokenKind.LeftParenDelimiter",
+                error: null
+              },
+              condition: {
+                kind: "NodeKind.NumberLiteralNode",
+                error: null,
+                literal: {
+                  start: 12,
+                  length: 1,
+                  kind: "TokenKind.NumberLiteral",
+                  error: null
+                }
+              },
+              rightParen: {
+                start: 13,
+                length: 1,
+                kind: "TokenKind.RightParenDelimiter",
+                error: null
+              },
+              semicolon: {
+                start: 14,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 15,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+    });
+
     describe("Switch Statement", function () {
       it("Should handle switch statement - 01", function () {
         const document = `switch(foo) { case(bar); break; }`;

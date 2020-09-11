@@ -10,6 +10,7 @@ NodeKind.ClassDeclarationNode = "NodeKind.ClassDeclarationNode";
 NodeKind.ClassBaseClauseNode = "NodeKind.ClassBaseClauseNode";
 NodeKind.ClassMembersNode = "NodeKind.ClassMembersNode";
 NodeKind.WhileStatementNode = "NodeKind.WhileStatementNode";
+NodeKind.DoStatementNode = "NodeKind.DoStatementNode";
 NodeKind.ExpressionStatementNode = "NodeKind.ExpressionStatementNode";
 NodeKind.VerbStatementNode = "NodeKind.VerbStatementNode";
 NodeKind.FunctionDeclarationNode = "NodeKind.FunctionDeclarationNode";

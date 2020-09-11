@@ -18,6 +18,7 @@ const { ClassBaseClauseNode } = require("./nodes/class-base-clause-node");
 const { ClassDeclarationNode } = require("./nodes/class-declaration-node");
 const { ClassMembersNode } = require("./nodes/class-members-node");
 const { WhileStatementNode } = require("./nodes/while-statement-node");
+const { DoStatementNode } = require("./nodes/do-statement-node");
 const {
   ExpressionStatementNode
 } = require("./nodes/expression-statement-node");
@@ -320,6 +321,7 @@ class Parser {
     switch (token.kind) {
       case TokenKind.ClassKeyword:
       case TokenKind.WhileKeyword:
+      case TokenKind.DoKeyword:
       case TokenKind.VerbKeyword:
       case TokenKind.IfKeyword:
       case TokenKind.ReturnKeyword:
@@ -399,6 +401,8 @@ class Parser {
         return this._parseClassDeclaration(parent);
       case TokenKind.WhileKeyword:
         return this._parseWhileStatement(parent);
+      case TokenKind.DoKeyword:
+        return this._parseDoStatement(parent);
       case TokenKind.VerbKeyword:
         return this._parseVerbStatement(parent);
       case TokenKind.VoidKeyword:
@@ -488,6 +492,21 @@ class Parser {
     node.condition = this._parseExpression(node);
     node.rightParen = this._consume(TokenKind.RightParenDelimiter);
     node.statements = this._parseCompoundStatement(node);
+
+    return node;
+  }
+
+  _parseDoStatement(parent) {
+    let node = new DoStatementNode();
+    node.parent = parent;
+
+    node.doKeyword = this._consume(TokenKind.DoKeyword);
+    node.statements = this._parseCompoundStatement(node);
+    node.whileKeyword = this._consume(TokenKind.WhileKeyword);
+    node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
+    node.condition = this._parseExpression(node);
+    node.rightParen = this._consume(TokenKind.RightParenDelimiter);
+    node.semicolon = this._consume(TokenKind.SemicolonDelimiter);
 
     return node;
   }
