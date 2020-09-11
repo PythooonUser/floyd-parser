@@ -362,6 +362,8 @@ class Parser {
       case TokenKind.PlusPlusOperator:
       case TokenKind.MinusMinusOperator:
       case TokenKind.LeftParenDelimiter:
+      case TokenKind.TildeOperator:
+      case TokenKind.ExclamationOperator:
         return true;
       default:
         // TODO: Handle reserved words etc.
@@ -1113,7 +1115,8 @@ class Parser {
     node.operator = this._consumeChoice([
       TokenKind.PlusOperator,
       TokenKind.MinusOperator,
-      TokenKind.ExclamationOperator
+      TokenKind.ExclamationOperator,
+      TokenKind.TildeOperator
     ]);
     node.operand = this._parseUnaryExpressionOrHigher(node);
 

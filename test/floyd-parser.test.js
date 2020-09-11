@@ -6154,6 +6154,93 @@ describe("Parser", function () {
         assertNodesEqual(actual, expected);
       });
 
+      it("Should handle function call - 06", function () {
+        const document = `foo(~attribute);`;
+
+        const expected = {
+          kind: "NodeKind.SourceDocumentNode",
+          error: null,
+          statements: [
+            {
+              kind: "NodeKind.ExpressionStatementNode",
+              error: null,
+              expression: {
+                kind: "NodeKind.CallExpressionNode",
+                error: null,
+                expression: {
+                  kind: "NodeKind.VariableNode",
+                  error: null,
+                  name: {
+                    start: 0,
+                    length: 3,
+                    kind: "TokenKind.Name",
+                    error: null
+                  }
+                },
+                leftParen: {
+                  start: 3,
+                  length: 1,
+                  kind: "TokenKind.LeftParenDelimiter",
+                  error: null
+                },
+                arguments: {
+                  kind: "NodeKind.ArgumentExpressionListNode",
+                  error: null,
+                  elements: [
+                    {
+                      kind: "NodeKind.ArgumentExpressionNode",
+                      error: null,
+                      argument: {
+                        kind: "NodeKind.UnaryOperatorExpressionNode",
+                        error: null,
+                        operand: {
+                          kind: "NodeKind.VariableNode",
+                          error: null,
+                          name: {
+                            start: 5,
+                            length: 9,
+                            kind: "TokenKind.Name",
+                            error: null
+                          }
+                        },
+                        operator: {
+                          start: 4,
+                          length: 1,
+                          kind: "TokenKind.TildeOperator",
+                          error: null
+                        }
+                      }
+                    }
+                  ]
+                },
+                rightParen: {
+                  start: 14,
+                  length: 1,
+                  kind: "TokenKind.RightParenDelimiter",
+                  error: null
+                }
+              },
+              semicolon: {
+                start: 15,
+                length: 1,
+                kind: "TokenKind.SemicolonDelimiter",
+                error: null
+              }
+            }
+          ],
+          endOfFile: {
+            start: 16,
+            length: 0,
+            kind: "TokenKind.EndOfFile",
+            error: null
+          }
+        };
+
+        const actual = parseSourceDocument(document);
+
+        assertNodesEqual(actual, expected);
+      });
+
       it("Should handle member call - 01", function () {
         const document = `foo.bar();`;
 
