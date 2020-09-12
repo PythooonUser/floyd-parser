@@ -1,10 +1,8 @@
-const fs = require("fs");
 const { Parser } = require("../src/floyd-parser");
 const { DiagnosticsProvider } = require("../src/diagnostics-provider");
 
 const arguments = process.argv;
 let document = "";
-document = fs.readFileSync("test.floyd", "utf-8");
 
 if (arguments.length < 3) {
   console.log("USAGE: node diagnostics-utils.js <floyd-code>\n");

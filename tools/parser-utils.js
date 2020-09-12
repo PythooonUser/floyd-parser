@@ -1,4 +1,3 @@
-const fs = require("fs");
 const { Parser } = require("../src/floyd-parser");
 
 const arguments = process.argv;
@@ -18,7 +17,7 @@ console.log(
     node,
     function (key, value) {
       // TODO: Make trivia exclusion optional.
-      if (key === "parent" || key === "trivia") {
+      if (["parent", "trivia", "document"].includes(key)) {
         return;
       }
 

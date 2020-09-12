@@ -24,7 +24,7 @@ describe("Parser", function () {
     assert.deepStrictEqual(
       JSON.parse(
         JSON.stringify(actual, function (key, value) {
-          if (key === "parent" || key === "trivia") {
+          if (["parent", "trivia", "document"].includes(key)) {
             return;
           }
 
