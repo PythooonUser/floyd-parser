@@ -14,10 +14,12 @@ Create a `Parser` instance, parse the source document and retrieve the abstract 
 
 ```js
 const { Parser } = require("floyd-parser");
-const { DiagnosticsProvider } = require("floyd-parser/diagnostics-provider");
+const {
+  DiagnosticsProvider
+} = require("floyd-parser/src/diagnostics-provider");
 
 // Parse the source document and retrieve an abstract syntax tree.
-const program = `int x;`;
+const document = `int x;`;
 const parser = new Parser();
 const node = parser.parseSourceDocument(document);
 
