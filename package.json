@@ -16,9 +16,7 @@
     "url": "https://github.com/PythooonUser/floyd-parser/issues"
   },
   "homepage": "https://github.com/PythooonUser/floyd-parser#readme",
-  "dependencies": {
-    "lex": "^1.7.9"
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "^8.1.3",
     "prettier": "^2.1.1"
