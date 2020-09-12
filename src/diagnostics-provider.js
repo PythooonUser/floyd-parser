@@ -3,6 +3,7 @@ const { TokenError } = require("./token-error");
 const { SourceDocumentNode } = require("./nodes/source-document-node");
 const { Diagnostic } = require("./diagnostic");
 const { getRangeFromPosition } = require("./position-utils");
+const { TokenKind } = require("./token-kind");
 
 class DiagnosticsProvider {
   constructor() {}
@@ -37,6 +38,13 @@ class DiagnosticsProvider {
         break;
       case TokenError.SkippedToken:
         message = `Unexpected ${token.kind}`;
+        break;
+      case TokenError.UnexpectedEndOfFile:
+        if (TokenKind.StringLiteral) {
+          message = "Strings need to be terminated with a '\"'.";
+        } else {
+          message = `Unexpected EOF`;
+        }
         break;
       default:
         throw new Error(`Unexpected error kind ${token.error}`);
