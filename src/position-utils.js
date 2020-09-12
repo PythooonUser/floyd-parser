@@ -24,7 +24,7 @@ const getLineCharacterFromPosition = (position, document) => {
       ? position - 1
       : position - previousNewlineIndex - 1;
 
-  const line = document.slice(0, position).split("\n").length;
+  const line = document.slice(0, position).split("\n").length - 1;
 
   return { line, character };
 };
