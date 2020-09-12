@@ -1,6 +1,6 @@
-const { NodeKind } = require("../node-kind");
-const { Node } = require("../node");
 const { Token } = require("../token");
+const { Node } = require("../node");
+const { NodeKind } = require("../node-kind");
 
 class SourceDocumentNode extends Node {
   constructor() {
@@ -10,8 +10,12 @@ class SourceDocumentNode extends Node {
 
     /** @type {(Node|Token)[]} */
     this.statements = [];
+
     /** @type {Token} */
     this.endOfFile = null;
+
+    /** @type {string} */
+    this.document = "";
   }
 }
 

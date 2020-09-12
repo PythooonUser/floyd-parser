@@ -208,6 +208,7 @@ class Parser {
     let node = new SourceDocumentNode();
     node.statements = this._parseElementList(node, ParseContext.SourceElements);
     node.endOfFile = this._consume(TokenKind.EndOfFile);
+    node.document = document;
 
     this._advance();
     return node;
