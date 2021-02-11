@@ -554,6 +554,15 @@ class Parser {
     return node;
   }
 
+  /**
+   * Parses the do statement.
+   *
+   * Example:
+   * do { statemet1 statementN } while ( condition );
+   *
+   * @param {Node} parent The parent node.
+   * @returns {DoStatementNode} The do statement node.
+   */
   _parseDoStatement(parent) {
     const node = new DoStatementNode();
     node.parent = parent;
@@ -569,6 +578,15 @@ class Parser {
     return node;
   }
 
+  /**
+   * Parses the for statement.
+   *
+   * Example:
+   * for (initializer; condition; increment) { statement1 statementN }
+   *
+   * @param {Node} parent The parent node.
+   * @returns {ForStatementNode} The do statement node.
+   */
   _parseForStatement(parent) {
     const node = new ForStatementNode();
     node.parent = parent;
