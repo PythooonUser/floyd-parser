@@ -19,7 +19,7 @@
   "dependencies": {},
   "devDependencies": {
     "mocha": "^8.2.1",
-    "prettier": "^2.1.1"
+    "prettier": "^2.2.1"
   },
   "prettier": {
     "arrowParens": "avoid",
