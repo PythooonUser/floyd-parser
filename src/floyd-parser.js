@@ -1287,7 +1287,7 @@ class Parser {
         return true;
 
       default:
-        false;
+        return false;
     }
   }
 
