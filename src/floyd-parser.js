@@ -88,9 +88,9 @@ const {
   PostfixUpdateExpressionNode
 } = require("./nodes/postfix-update-expression-node");
 
-/** Generates an abstract syntax tree from a source document. */
+/** Generates an abstract syntax tree (AST) from a source document. */
 class Parser {
-  /** Creates a new Parser. */
+  /** Creates a new parser. */
   constructor() {
     /** @type {Lexer} */
     this.lexer = new Lexer();
@@ -122,6 +122,9 @@ class Parser {
 
   /**
    * Looks at the next token from the lexer.
+   *
+   * @param {number} step The number of tokens to look ahead.
+   * @returns {Token} The next token.
    */
   _look(step = 1) {
     return this.lexer.look(step);
@@ -131,6 +134,7 @@ class Parser {
    * Returns the next token in the source document.
    *
    * @param {TokenKind} kind The token kind to match with the next token.
+   * @returns {Token} The next token.
    */
   _consume(kind) {
     const token = this.token;
@@ -147,6 +151,7 @@ class Parser {
    * Returns the next token in the source document.
    *
    * @param {TokenKind[]} kinds The token kinds to match with the next token.
+   * @returns {Token} The next token.
    */
   _consumeChoice(kinds) {
     const token = this.token;
@@ -163,6 +168,7 @@ class Parser {
    * Returns the next token in the source document only if `kind` matches.
    *
    * @param {TokenKind} kind The token kind to match with the next token.
+   * @returns {Token|null} The next token.
    */
   _consumeOptional(kind) {
     const token = this.token;
@@ -176,7 +182,9 @@ class Parser {
   }
 
   /**
-   * @return {ParseContext[]}
+   * Returns the parse context history.
+   *
+   * @returns {ParseContext[]} The parse context history.
    */
   _getParseContextHistory() {
     return [ParseContext.SourceElements].concat(
@@ -185,27 +193,32 @@ class Parser {
   }
 
   /**
-   * @param {ParseContext} context
+   * Sets the current parse context and adds it to the history.
+   *
+   * @param {ParseContext} context The current parse context.
    */
   _setCurrentParseContext(context) {
     this.parseContexts.push(context);
   }
 
+  /**
+   * Sets the parse context history to the previous context.
+   */
   _restorePreviousParseContext() {
     this.parseContexts.pop();
   }
 
   /**
-   * Parses a source document and returns a SourceDocumentNode object.
+   * Parses a source document and returns a source document node.
    *
    * @param {string} document The source document.
-   * @return {SourceDocumentNode} The root node for the AST.
+   * @returns {SourceDocumentNode} The root node for the AST.
    */
   parseSourceDocument(document) {
     this._reset(document);
     this._advance();
 
-    let node = new SourceDocumentNode();
+    const node = new SourceDocumentNode();
     node.statements = this._parseElementList(node, ParseContext.SourceElements);
     node.endOfFile = this._consume(TokenKind.EndOfFile);
     node.document = document;
@@ -215,19 +228,21 @@ class Parser {
   }
 
   /**
-   * TODO
+   * Parses an element list of the given parse context.
+   *
    * @param {ParseContext} context The element parse context.
+   * @returns {Node[]} The element list nodes.
    */
   _parseElementList(parent, context) {
     this._setCurrentParseContext(context);
 
     /** @type {Node[]} */
-    let elementList = [];
+    const elementList = [];
 
     while (!this._isElementListTerminator(context, this.token)) {
       if (this._isElementListInitiator(context, this.token)) {
         const parser = this._getElementListParser(context);
-        let element = parser(parent);
+        const element = parser(parent);
         elementList.push(element);
         continue;
       }
@@ -236,7 +251,7 @@ class Parser {
         break;
       }
 
-      let skippedToken = this.token;
+      const skippedToken = this.token;
       skippedToken.error = TokenError.SkippedToken;
       elementList.push(skippedToken);
       this._advance();
@@ -248,8 +263,10 @@ class Parser {
   }
 
   /**
-   * @param {Token} token
-   * @return {boolean}
+   * Checks whether `token` is valid in enclosing parse contexts.
+   *
+   * @param {Token} token The token to be checked.
+   * @returns {boolean} The token is valid.
    */
   _isValidInEnclosingContexts(token) {
     const parseContextHistory = this._getParseContextHistory();
@@ -269,9 +286,12 @@ class Parser {
   }
 
   /**
-   * TODO
+   * Checks whether `token` is a list terminator in the parse `context`.
+   *
    * @param {ParseContext} context The element parse context.
    * @param {Token} token The token to be checked.
+   * @returns {boolean} The token is a list terminator.
+   * @throws {ParseContextError} The parse context must be valid.
    */
   _isElementListTerminator(context, token) {
     const kind = token.kind;
@@ -298,9 +318,12 @@ class Parser {
   }
 
   /**
-   * TODO
+   * Checks whether `token` is a list initiator in the parse `context`.
+   *
    * @param {ParseContext} context The element parse context.
    * @param {Token} token The token to be checked.
+   * @returns {boolean} The token is a list initiator.
+   * @throws {ParseContextError} The parse context must be valid.
    */
   _isElementListInitiator(context, token) {
     switch (context) {
@@ -322,8 +345,10 @@ class Parser {
   }
 
   /**
-   * TODO
+   * Checks whether `token` is a statement initiator.
+   *
    * @param {Token} token The token to be checked.
+   * @returns {boolean} The token is a statement initiator.
    */
   _isStatementInitiator(token) {
     switch (token.kind) {
@@ -351,7 +376,12 @@ class Parser {
     }
   }
 
-  // TODO: Description
+  /**
+   * Checks whether `token` is an expression initiator.
+   *
+   * @param {Token} token The token to be checked.
+   * @returns {boolean} The token is an expression initiator.
+   */
   _isExpressionInitiator(token) {
     switch (token.kind) {
       case TokenKind.Name:
@@ -372,6 +402,12 @@ class Parser {
     }
   }
 
+  /**
+   * Checks whether `token` is a class member declaration initiator.
+   *
+   * @param {Token} token The token to be checked.
+   * @returns {boolean} The token is a class member declaration initiator.
+   */
   _isClassMemberDeclarationInitiator(token) {
     const kind = token.kind;
 
@@ -391,6 +427,12 @@ class Parser {
     }
   }
 
+  /**
+   * Returns an element list parser for the given parse `context`.
+   *
+   * @param {ParseContext} context The element parse context.
+   * @throws {ParseContextError} The parse context must be valid.
+   */
   _getElementListParser(context) {
     switch (context) {
       case ParseContext.SourceElements:
@@ -446,7 +488,7 @@ class Parser {
   }
 
   _parseClassDeclaration(parent) {
-    let node = new ClassDeclarationNode();
+    const node = new ClassDeclarationNode();
     node.parent = parent;
 
     node.classKeyword = this._consume(TokenKind.ClassKeyword);
@@ -466,7 +508,7 @@ class Parser {
       return;
     }
 
-    let node = new ClassBaseClauseNode();
+    const node = new ClassBaseClauseNode();
     node.parent = parent;
 
     node.colon = colon;
@@ -476,7 +518,7 @@ class Parser {
   }
 
   _parseClassMembers(parent) {
-    let node = new ClassMembersNode();
+    const node = new ClassMembersNode();
     node.parent = parent;
 
     node.leftBrace = this._consume(TokenKind.LeftBraceDelimiter);
@@ -494,13 +536,13 @@ class Parser {
    * Parses the while statement.
    *
    * Example:
-   * while ( condition ) { statements...; }
+   * while ( condition ) { statement1 statementN }
    *
    * @param {Node} parent The parent node.
-   * @return {WhileStatementNode} The while statement node.
+   * @returns {WhileStatementNode} The while statement node.
    */
   _parseWhileStatement(parent) {
-    let node = new WhileStatementNode();
+    const node = new WhileStatementNode();
     node.parent = parent;
 
     node.whileKeyword = this._consume(TokenKind.WhileKeyword);
@@ -513,7 +555,7 @@ class Parser {
   }
 
   _parseDoStatement(parent) {
-    let node = new DoStatementNode();
+    const node = new DoStatementNode();
     node.parent = parent;
 
     node.doKeyword = this._consume(TokenKind.DoKeyword);
@@ -528,7 +570,7 @@ class Parser {
   }
 
   _parseForStatement(parent) {
-    let node = new ForStatementNode();
+    const node = new ForStatementNode();
     node.parent = parent;
 
     node.forKeyword = this._consume(TokenKind.ForKeyword);
@@ -545,7 +587,7 @@ class Parser {
   }
 
   _parseFetchStatement(parent) {
-    let node = new FetchStatementNode();
+    const node = new FetchStatementNode();
     node.parent = parent;
 
     node.fetchKeyword = this._consume(TokenKind.FetchKeyword);
@@ -562,7 +604,7 @@ class Parser {
   }
 
   _parseVerbStatement(parent) {
-    let node = new VerbStatementNode();
+    const node = new VerbStatementNode();
     node.parent = parent;
 
     // TODO: Or should we better use an ArgumentExpressionList instead?
@@ -593,7 +635,7 @@ class Parser {
   }
 
   _parseFunctionDeclaration(parent) {
-    let node = new FunctionDeclarationNode();
+    const node = new FunctionDeclarationNode();
     node.parent = parent;
 
     node.returnType = this._consumeChoice([
@@ -612,7 +654,7 @@ class Parser {
   }
 
   _parseVariableDeclarationList(parent) {
-    let node = new VariableDeclarationListNode();
+    const node = new VariableDeclarationListNode();
     node.parent = parent;
 
     // TODO: Allow also reserved words, but emit an error when doing so.
@@ -651,7 +693,7 @@ class Parser {
   }
 
   _parseVariableDeclaration(parent) {
-    let node = new VariableDeclarationNode();
+    const node = new VariableDeclarationNode();
     node.parent = parent;
 
     // TODO: Allow also reserved words, but emit an error when doing so.
@@ -672,12 +714,12 @@ class Parser {
   }
 
   _parseArrayDeclarationClause(parent) {
-    let node = new ArrayDeclarationClauseNode();
+    const node = new ArrayDeclarationClauseNode();
     node.parent = parent;
 
     node.leftBracket = this._consume(TokenKind.LeftBracketDelimiter);
 
-    let length = this._parseExpression(node);
+    const length = this._parseExpression(node);
     // TODO: Could be simplified using a MissingToken instead.
     if (length instanceof Token && length.error === TokenError.MissingToken) {
       length.kind = TokenKind.ArrayLength;
@@ -693,7 +735,7 @@ class Parser {
    * @param {VariableDeclarationNode} parent
    */
   _parseVariableInitializationClause(parent) {
-    let node = new VariableInitializationClauseNode();
+    const node = new VariableInitializationClauseNode();
     node.parent = parent;
 
     node.equals = this._consume(TokenKind.EqualsOperator);
@@ -708,13 +750,13 @@ class Parser {
   }
 
   _parseArrayLiteral(parent) {
-    let node = new ArrayLiteralNode();
+    const node = new ArrayLiteralNode();
     node.parent = parent;
 
     node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
 
     while (true) {
-      let token = this.token;
+      const token = this.token;
 
       if (!this._isExpressionInitiator(token)) {
         break;
@@ -738,7 +780,7 @@ class Parser {
   }
 
   _parseIfStatement(parent) {
-    let node = new IfStatementNode();
+    const node = new IfStatementNode();
     node.parent = parent;
 
     node.ifKeyword = this._consume(TokenKind.IfKeyword);
@@ -756,7 +798,7 @@ class Parser {
   }
 
   _parseElseClause(parent) {
-    let node = new ElseClauseNode();
+    const node = new ElseClauseNode();
     node.parent = parent;
 
     node.elseKeyword = this._consume(TokenKind.ElseKeyword);
@@ -766,7 +808,7 @@ class Parser {
   }
 
   _parseReturnStatement(parent) {
-    let node = new ReturnStatementNode();
+    const node = new ReturnStatementNode();
     node.parent = parent;
 
     node.returnKeyword = this._consume(TokenKind.ReturnKeyword);
@@ -779,7 +821,7 @@ class Parser {
   }
 
   _parseSwitchStatement(parent) {
-    let node = new SwitchStatementNode();
+    const node = new SwitchStatementNode();
     node.parent = parent;
 
     node.switchKeyword = this._consume(TokenKind.SwitchKeyword);
@@ -805,15 +847,18 @@ class Parser {
         return this._parseDefaultStatement(parent);
 
       default:
-        const kind = TokenKind.CaseKeyword;
-        const error = TokenError.MissingToken;
-
-        return new Token(token.start, 0, kind, [], error);
+        return new Token(
+          token.start,
+          0,
+          TokenKind.CaseKeyword,
+          [],
+          TokenError.MissingToken
+        );
     }
   }
 
   _parseCaseStatement(parent) {
-    let node = new CaseStatementNode();
+    const node = new CaseStatementNode();
     node.parent = parent;
 
     node.caseKeyword = this._consume(TokenKind.CaseKeyword);
@@ -830,7 +875,7 @@ class Parser {
   }
 
   _parseDefaultStatement(parent) {
-    let node = new DefaultStatementNode();
+    const node = new DefaultStatementNode();
     node.parent = parent;
 
     node.defaultKeyword = this._consume(TokenKind.DefaultKeyword);
@@ -844,7 +889,7 @@ class Parser {
   }
 
   _parseQuitStatement(parent) {
-    let node = new QuitStatementNode();
+    const node = new QuitStatementNode();
     node.parent = parent;
 
     node.quitKeyword = this._consume(TokenKind.QuitKeyword);
@@ -854,7 +899,7 @@ class Parser {
   }
 
   _parseHaltStatement(parent) {
-    let node = new HaltStatementNode();
+    const node = new HaltStatementNode();
     node.parent = parent;
 
     node.haltKeyword = this._consume(TokenKind.HaltKeyword);
@@ -867,7 +912,7 @@ class Parser {
   }
 
   _parseBreakStatement(parent) {
-    let node = new BreakStatementNode();
+    const node = new BreakStatementNode();
     node.parent = parent;
 
     node.breakKeyword = this._consume(TokenKind.BreakKeyword);
@@ -877,7 +922,7 @@ class Parser {
   }
 
   _parseCompoundStatement(parent) {
-    let node = new CompoundStatementNode();
+    const node = new CompoundStatementNode();
     node.parent = parent;
 
     node.leftBrace = this._consume(TokenKind.LeftBraceDelimiter);
@@ -894,7 +939,7 @@ class Parser {
    * Parses an expression.
    *
    * @param {Node} parent The parent Node object.
-   * @return {Expression} The parsed Expression object.
+   * @returns {Expression} The parsed Expression object.
    */
   _parseExpression(parent) {
     const token = this.token;
@@ -914,7 +959,7 @@ class Parser {
    * Parses a primary expression part, i.e. names or literals.
    *
    * @param {Node} parent The parent node.
-   * @return {Node|Token} The parsed primary expression.
+   * @returns {Node|Token} The parsed primary expression.
    */
   _parsePrimaryExpression(parent) {
     const token = this.token;
@@ -935,10 +980,13 @@ class Parser {
         return this._parseParenthesizedExpression(parent);
 
       default:
-        const kind = TokenKind.Expression;
-        const error = TokenError.MissingToken;
-
-        return new Token(token.start, 0, kind, [], error);
+        return new Token(
+          token.start,
+          0,
+          TokenKind.Expression,
+          [],
+          TokenError.MissingToken
+        );
     }
   }
 
@@ -946,10 +994,10 @@ class Parser {
    * Parses a variable.
    *
    * @param {Node} parent The parent node.
-   * @return {VariableNode} The parsed variable.
+   * @returns {VariableNode} The parsed variable.
    */
   _parseVariable(parent) {
-    let node = new VariableNode();
+    const node = new VariableNode();
     node.parent = parent;
 
     // TODO: Set kind to Variable in order to be more specific?
@@ -968,10 +1016,10 @@ class Parser {
    * Parses a number.
    *
    * @param {Node} parent The parent node.
-   * @return {NumberLiteralNode} The parsed number literal.
+   * @returns {NumberLiteralNode} The parsed number literal.
    */
   _parseNumberLiteral(parent) {
-    let node = new NumberLiteralNode();
+    const node = new NumberLiteralNode();
     node.parent = parent;
 
     node.literal = this._consume(TokenKind.NumberLiteral);
@@ -983,10 +1031,10 @@ class Parser {
    * Parses a string.
    *
    * @param {Node} parent The parent node.
-   * @return {StringLiteralNode} The parsed string literal.
+   * @returns {StringLiteralNode} The parsed string literal.
    */
   _parseStringLiteral(parent) {
-    let node = new StringLiteralNode();
+    const node = new StringLiteralNode();
     node.parent = parent;
 
     // TODO: Check if this is a template string and parse it accordingly.
@@ -997,7 +1045,7 @@ class Parser {
   }
 
   _parseParenthesizedExpression(parent) {
-    let node = new ParenthesizedExpressionNode();
+    const node = new ParenthesizedExpressionNode();
     node.parent = parent;
 
     node.leftParen = this._consume(TokenKind.LeftParenDelimiter);
@@ -1051,7 +1099,7 @@ class Parser {
   }
 
   _parseBinaryExpression(leftOperand, operator, rightOperand, parent) {
-    let node = new BinaryExpressionNode();
+    const node = new BinaryExpressionNode();
     node.parent = parent;
 
     leftOperand.parent = node;
@@ -1065,7 +1113,7 @@ class Parser {
   }
 
   _parseTernaryExpression(leftOperand, operator, parent) {
-    let node = new TernaryExpressionNode();
+    const node = new TernaryExpressionNode();
 
     // In case `leftOperand` is e.g. a MissingToken.
     if (leftOperand instanceof Node) {
@@ -1110,7 +1158,7 @@ class Parser {
   }
 
   _parseUnaryOperatorExpression(parent) {
-    let node = new UnaryOperatorExpressionNode();
+    const node = new UnaryOperatorExpressionNode();
     node.parent = parent;
 
     node.operator = this._consumeChoice([
@@ -1125,7 +1173,7 @@ class Parser {
   }
 
   _parsePrefixUpdateExpression(parent) {
-    let node = new PrefixUpdateExpressionNode();
+    const node = new PrefixUpdateExpressionNode();
     node.parent = parent;
 
     node.operator = this._consumeChoice([
@@ -1140,7 +1188,7 @@ class Parser {
   }
 
   _parsePostfixUpdateExpression(expression) {
-    let node = new PostfixUpdateExpressionNode();
+    const node = new PostfixUpdateExpressionNode();
     node.parent = expression.parent;
     expression.parent = node;
 
@@ -1181,7 +1229,7 @@ class Parser {
   }
 
   _parseCallExpression(expression) {
-    let node = new CallExpressionNode();
+    const node = new CallExpressionNode();
     node.parent = expression.parent;
     expression.parent = node;
 
@@ -1194,14 +1242,14 @@ class Parser {
   }
 
   _parseArrayElementAccessExpression(expression) {
-    let node = new ArrayElementAccessExpressionNode();
+    const node = new ArrayElementAccessExpressionNode();
     node.parent = expression.parent;
     expression.parent = node;
 
     node.expression = expression;
     node.leftBracket = this._consume(TokenKind.LeftBracketDelimiter);
 
-    let index = this._parseExpression(node);
+    const index = this._parseExpression(node);
     // TODO: Could be simplified using a MissingToken instead.
     if (index instanceof Token && index.error === TokenError.MissingToken) {
       index.kind = TokenKind.ArrayElementIndex;
@@ -1214,11 +1262,11 @@ class Parser {
   }
 
   _parseArgumentExpressionList(parent) {
-    let node = new ArgumentExpressionListNode();
+    const node = new ArgumentExpressionListNode();
     node.parent = parent;
 
     while (true) {
-      let token = this.token;
+      const token = this.token;
 
       if (!this._isArgumentExpressionInitiator(token)) {
         break;
@@ -1244,7 +1292,7 @@ class Parser {
   }
 
   _parseArgumentExpression(parent) {
-    let node = new ArgumentExpressionNode();
+    const node = new ArgumentExpressionNode();
     node.parent = parent;
 
     node.argument = this._parseExpression(node);
@@ -1253,11 +1301,11 @@ class Parser {
   }
 
   _parseParameterDeclarationList(parent) {
-    let node = new ParameterDeclarationListNode();
+    const node = new ParameterDeclarationListNode();
     node.parent = parent;
 
     while (true) {
-      let token = this.token;
+      const token = this.token;
 
       if (!this._isParameterDeclarationInitiator(token)) {
         break;
@@ -1292,7 +1340,7 @@ class Parser {
   }
 
   _parseParameterDeclaration(parent) {
-    let node = new ParameterDeclarationNode();
+    const node = new ParameterDeclarationNode();
     node.parent = parent;
 
     // TODO: Reduce redundancy with _isParameterDeclarationInitiator.
@@ -1308,7 +1356,7 @@ class Parser {
   }
 
   _parseMemberAccess(expression) {
-    let node = new MemberAccessExpressionNode();
+    const node = new MemberAccessExpressionNode();
     node.parent = expression.parent;
     expression.parent = node;
 
@@ -1326,10 +1374,13 @@ class Parser {
       this._advance();
       return token;
     } else {
-      const kind = TokenKind.MemberName;
-      const error = TokenError.MissingToken;
-
-      return new Token(token.start, 0, kind, [], error);
+      return new Token(
+        token.start,
+        0,
+        TokenKind.MemberName,
+        [],
+        TokenError.MissingToken
+      );
     }
   }
 
@@ -1337,10 +1388,10 @@ class Parser {
    * Parses an expression statement.
    *
    * @param {Node} parent The parent Node object.
-   * @return {ExpressionStatementNode} The parsed ExpressionStatementNode object.
+   * @returns {ExpressionStatementNode} The parsed ExpressionStatementNode object.
    */
   _parseExpressionStatement(parent) {
-    let node = new ExpressionStatementNode();
+    const node = new ExpressionStatementNode();
     node.parent = parent;
 
     node.expression = this._parseExpression(node);
